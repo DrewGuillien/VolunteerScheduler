@@ -43,10 +43,22 @@
     <Compile Include="routes\index.js" />
     <Compile Include="routes\users.js" />
     <Compile Include="bin\www" />
+    <Compile Include="views\shared\pages\activitiesController.js">
+      <SubType>Code</SubType>
+    </Compile>
     <Content Include="package.json" />
     <Content Include="README.md" />
     <Content Include="typings.json" />
+    <Content Include="views\admin\adminDashboard.html">
+      <SubType>Code</SubType>
+    </Content>
     <Content Include="views\shared\login\login.html">
+      <SubType>Code</SubType>
+    </Content>
+    <Content Include="views\shared\pages\activities.html">
+      <SubType>Code</SubType>
+    </Content>
+    <Content Include="views\shared\pages\programs.html">
       <SubType>Code</SubType>
     </Content>
   </ItemGroup>
@@ -76,6 +88,7 @@
     <Folder Include="views\admin\" />
     <Folder Include="views\shared\" />
     <Folder Include="views\shared\login\" />
+    <Folder Include="views\shared\pages\" />
   </ItemGroup>
   <ItemGroup>
     <TypeScriptCompile Include="typings\globals\body-parser\index.d.ts" />
