@@ -3,13 +3,13 @@
 activities.config(["$routeProvider", function ($routeProvider) {
     var config = {
         templateUrl: "view/shared/pages/activities.html",
-        controller: "Volunteer.Activities"
+        controller: "Volunteer.Activities.Controller"
     }
-    $routeProvider.when("/activities", config);
+    $routeProvider.when("/programs/:programId", config);
 }]);
 
 activities.controller("Volunteer.Activities.Controller", ["$scope", "$http", "$routeParams"], function ($scope, $http, $routeParams) {
-    $http.get("/activities").then(function(response) {
+    $http.get("/programs/" + $routeParams + "/activities").then(function(response) {
         $scope.activities = response;
     });
 });

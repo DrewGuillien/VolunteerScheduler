@@ -37,6 +37,21 @@
     <Compile Include="public\javascripts\Session.js">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="routes\db\models\activityModel.js">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="routes\db\models\programModel.js">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="routes\db\models\userModel.js">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="routes\db\programs.js">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="routes\db\users.js">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="views\shared\login\login.js">
       <SubType>Code</SubType>
     </Compile>
@@ -44,6 +59,9 @@
     <Compile Include="routes\users.js" />
     <Compile Include="bin\www" />
     <Compile Include="views\shared\pages\activitiesController.js">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="views\shared\pages\programsController.js">
       <SubType>Code</SubType>
     </Compile>
     <Content Include="package.json" />
@@ -67,9 +85,10 @@
     <Folder Include="public\" />
     <Folder Include="public\images\" />
     <Folder Include="public\javascripts\" />
-    <Folder Include="public\controllers\" />
     <Folder Include="public\stylesheets\" />
     <Folder Include="routes\" />
+    <Folder Include="routes\db\" />
+    <Folder Include="routes\db\models\" />
     <Folder Include="typings\" />
     <Folder Include="typings\globals\" />
     <Folder Include="typings\globals\body-parser\" />

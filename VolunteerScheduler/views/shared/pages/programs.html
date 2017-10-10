@@ -1,5 +1,18 @@
 ﻿<div>
     <table>
-
+        <thead>
+            <th>
+                <td>Title</td>
+                <td>Description</td>
+                <td></td>
+            </th>
+        </thead>
+        <tbody>
+            <tr ng-repeat="program in programs">
+                <td>{{program.title}}</td>
+                <td>{{program.description}}</td>
+                <td><button ng-click="view(program.id)">View</button></td>
+            </tr>
+        </tbody>
     </table>
 </div>
