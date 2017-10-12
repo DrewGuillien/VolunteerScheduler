@@ -14,4 +14,12 @@
                 templateUrl: "/views/shared/pages/activities.html",
                 controller: "Volunteer.Activities.Controller"
             })
+            .when("/adminDashboard", {
+                templateUrl: "/views/admin/adminDashboard.html",
+                controller: "Volunteer.Admin.Dashboard.Controller"
+            })
+            .otherwise({
+                templateUrl: "/views/shared/login/login.html",
+                controller: "Volunteer.Login.Controller"
+            })
     }]);

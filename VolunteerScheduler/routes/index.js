@@ -9,20 +9,26 @@ var programs = require("./db/programs");
 /* GET home page. */
 
 router.post("/login", function (request, response) {
-    console.log(request.body.username);
     users.findByUsername(request.body.username, function (err, user) {
         if (err) {
             console.log(err);
             response.send(401);
         } else {
-            console.log(request.body.password);
-            console.log(user);
-            console.log(request.body.password == user[0].password);
-            if (request.body.password == user[0].password) {
+            if (request.body.password && user[0] && user[0].password && request.body.password == user[0].password) {
                 response.json(user);
             } else {
                 response.send(401);
             }
+        }
+    });
+});
+
+router.post("/users", function (request, response) {
+    users.save(request.body, function (err, user) {
+        if (err) {
+            response.send(500);
+        } else {
+            response.send(200);
         }
     });
 });
