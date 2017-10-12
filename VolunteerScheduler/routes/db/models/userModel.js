@@ -16,7 +16,7 @@ userSchema.set('toJSON',  {
         result.id = result._id;
         // remove mongo internal fields
         delete result._id;
-        delete resule._v;
+        delete result._v;
     }
 });
 

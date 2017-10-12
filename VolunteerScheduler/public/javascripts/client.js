@@ -32,9 +32,9 @@ app.factory("AuthInterceptor", ["$q", "$location", "$locationProvider", "Session
             $locationProvider.hashPrefix("");
 
             Session.destroy();
-            //$location.path("/login");
-            $location.path("programs");
-            //return $q.reject(rejection);
+            $location.path("/login");
+            //$location.path("programs");
+            return $q.reject(rejection);
         }
     }
 }]);
@@ -43,8 +43,8 @@ app.config(["$routeProvider", "$httpProvider",
     function ($routeProvider, $httpProvider) {
         $routeProvider
             .otherwise({
-                //redirectTo: "/login"
-                redirectTo: "/programs"
+                redirectTo: "/login"
+                //redirectTo: "/programs"
             });
     }
 ]);

@@ -7,17 +7,31 @@ var programs = require("./db/programs");
 // var activities = require("./db/activities");
 
 /* GET home page. */
+
+router.post("/login", function (request, response) {
+    console.log(request.body.username);
+    users.findByUsername(request.body.username, function (err, user) {
+        if (err) {
+            console.log(err);
+            response.send(401);
+        } else {
+            console.log(request.body.password);
+            console.log(user);
+            console.log(request.body.password == user[0].password);
+            if (request.body.password == user[0].password) {
+                response.json(user);
+            } else {
+                response.send(401);
+            }
+        }
+    });
+});
+
 router.get("/", function (request, response) {
     response.sendFile(path.join(__dirname, "../public", "index.html"));
 });
 
 router.get("/programs", function (request, response) {
-    response.json([
-        { title: "Test 1", description: "Test description", id: 1 },
-        { title: "Test 2", description: "TEST TEST", id: 2 },
-        { title: "Test 3", description: "SOMETHING WENT HORRIBLY WRONG jk test", id: 3 }
-    ]);
-/*
     programs.findAll(function (error, programList) {
         if (error) {
             response.send(404, "No Programs Found");
@@ -25,7 +39,6 @@ router.get("/programs", function (request, response) {
             response.json(programList);
         }
     });
-    */
 });
 
 router.get("/programs/:programId", function (request, response) {

@@ -1,16 +1,19 @@
-﻿<div class="container">
-    <button ng-click="createForm()">Add New Program</button>
-    <form ng-if="form">
+﻿<div class="container" ng-controller="Volunteer.Programs.Controller as $ctrl">
+    <button ng-if="!form" ng-click="createForm()" name="createProgramForm" class="btn btn-primary pull-right">Add New Program</button>
+    <form ng-if="form" class="form col-md-4">
         <div>
             <label>Title</label>
-            <input type="text" />
+            <input type="text" ng-model="$ctrl.title" class="form-control"/>
+            {{title}}
         </div>
         <div>
             <label>Description</label>
-            <input type="text" />
+            <input type="text" ng-model="$ctrl.description" class="form-control"/>
+            {{description}}
         </div>
         <div>
-            <button ng-click="add()">Add</button>
+            <input ng-click="add()" type="submit" value="Add" class="btn btn-primary" />
+            <span ng-if="hasError">{{error}}</span>
         </div>
     </form>
     <table class="table table-striped">
@@ -29,6 +32,10 @@
                 <td><button ng-click="view(program.id)" class="btn btn-success">View</button></td>
                 <td><button ng-click="edit(program.id)" class="btn btn-default">Edit</button></td>
                 <td><button ng-click="delete(program.id)" class="btn btn-danger">Delete</button></td>
+            </tr>
+            <tr ng-if="empty">
+                <td></td>
+                <td colspan="5">There are no programs</td>
             </tr>
         </tbody>
     </table>
