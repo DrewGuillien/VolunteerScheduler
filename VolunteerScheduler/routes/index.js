@@ -13,9 +13,9 @@ router.get("/", function (request, response) {
 
 router.get("/programs", function (request, response) {
     response.json([
-        { title: "Test 1", description: "Test description" },
-        { title: "Test 2", description: "TEST TEST" },
-        { title: "Test 3", description: "SOMETHING WENT HORRIBLY WRONG jk test" }
+        { title: "Test 1", description: "Test description", id: 1 },
+        { title: "Test 2", description: "TEST TEST", id: 2 },
+        { title: "Test 3", description: "SOMETHING WENT HORRIBLY WRONG jk test", id: 3 }
     ]);
 /*
     programs.findAll(function (error, programList) {
