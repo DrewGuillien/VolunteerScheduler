@@ -1,15 +1,5 @@
-﻿login = angular.module("Volunteer.Login", ["ngRoute"]);
-
-login.config(["$routeProvider", function ($routeProvider) {
-    var config = {
-        templateUrl: "views/shared/login/login.html",
-        controller: "Volunteer.Login.Controller"
-    }
-
-    $routeProvider.when("/", config).when("/login", config);
-}]);
-
-login.controller("Volunteer.Login.Controller", ["$scope", "$http", "$location", "Session.service"], function ($scope, $http, $location, Session) {
+﻿angular.module("Volunteer.App")
+    .controller("Volunteer.Login.Controller", ["$scope", "$http", "$location", "Session.service"], function ($scope, $http, $location, Session) {
     $scope.username = "";
     $scope.password = "";
     $scope.hasError = false;
@@ -21,9 +11,9 @@ login.controller("Volunteer.Login.Controller", ["$scope", "$http", "$location", 
         if (Session.hasRole("ROLE_ADMIN")) {
             $location.path("/admin/dashboard");
         } else if (Session.hasRole("ROLE_PROGRAM_MANAGER")) {
-            $location.path("/program/list");
+            $location.path("/programs");
         } else if (Session.hasRole("ROLE_USER")) {
-            $locatoin.path("/program/list");
+            $locatoin.path("/programs");
         } else {
             $scope.hasError = true;
             $scope.errorMessage = "User does not have a valid role";

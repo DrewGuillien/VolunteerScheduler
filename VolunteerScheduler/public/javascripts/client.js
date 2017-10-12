@@ -1,7 +1,4 @@
-﻿var app = angular.module("Volunteer.App",
-    ["ngRoute",
-    "Session"
-    ]); //Add dependancies later
+﻿var app = angular.module("Volunteer.App"); //Get App
 
 app.controller("Volunteer.Navigation.Controller",
     ["$scope", "$http", "$location", "Session.Service",
@@ -29,12 +26,15 @@ app.controller("Volunteer.Navigation.Controller",
     ]
 );
 
-app.factory("AuthInterceptor", ["$q", "$location", "Session.Service", function ($q, $location, Session) {
+app.factory("AuthInterceptor", ["$q", "$location", "$locationProvider", "Session.Service", function ($q, $location, $locationProvider, Session) {
     return {
         "responseError": function (rejection) {
+            $locationProvider.hashPrefix("");
+
             Session.destroy();
-            $location.path("/login");
-            return $q.reject(rejection);
+            //$location.path("/login");
+            $location.path("programs");
+            //return $q.reject(rejection);
         }
     }
 }]);
@@ -43,7 +43,8 @@ app.config(["$routeProvider", "$httpProvider",
     function ($routeProvider, $httpProvider) {
         $routeProvider
             .otherwise({
-                redirectTo: "/login"
+                //redirectTo: "/login"
+                redirectTo: "/programs"
             });
     }
 ]);

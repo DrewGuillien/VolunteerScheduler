@@ -31,6 +31,9 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="app.js" />
+    <Compile Include="public\controllers\config.js">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="public\javascripts\client.js">
       <SubType>Code</SubType>
     </Compile>
@@ -52,16 +55,16 @@
     <Compile Include="routes\db\users.js">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="public\views\shared\login\login.js">
+    <Compile Include="public\controllers\login.js">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="routes\index.js" />
     <Compile Include="routes\users.js" />
     <Compile Include="bin\www" />
-    <Compile Include="public\views\shared\pages\activities.js">
+    <Compile Include="public\controllers\activities.js">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="public\views\shared\pages\programs.js">
+    <Compile Include="public\controllers\programs.js">
       <SubType>Code</SubType>
     </Compile>
     <Content Include="package.json" />
@@ -85,6 +88,7 @@
     <Folder Include="public\" />
     <Folder Include="public\images\" />
     <Folder Include="public\javascripts\" />
+    <Folder Include="public\controllers\" />
     <Folder Include="public\stylesheets\" />
     <Folder Include="routes\" />
     <Folder Include="routes\db\" />
