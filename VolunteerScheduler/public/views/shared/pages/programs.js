@@ -8,12 +8,13 @@ programs.config(["$routeProvider", function ($routeProvider) {
     $routeProvider.when("/programs", config);
 }]);
 
-activities.controller("Volunteer.Programs.Controller", ["$scope", "$http", "$routeParams"], function ($scope, $http, $routeParams) {
+programs.controller("Volunteer.Programs.Controller", ["$scope", "$http", "$routeParams"], function ($scope, $http, $routeParams) {
     $http.get("/programs").then(function (response) {
         $scope.programs = response;
     });
 
     $scope.view = function (programId) {
         // route to '/programs/:programId'
+
     }
 });

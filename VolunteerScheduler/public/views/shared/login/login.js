@@ -7,7 +7,7 @@ login.config(["$routeProvider", function ($routeProvider) {
     }
 
     $routeProvider.when("/", config).when("/login", config);
-});
+}]);
 
 login.controller("Volunteer.Login.Controller", ["$scope", "$http", "$location", "Session.service"], function ($scope, $http, $location, Session) {
     $scope.username = "";

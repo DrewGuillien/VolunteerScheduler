@@ -1,5 +1,6 @@
 ﻿var express = require("express");
 var router = express.Router();
+var path = require("path");
 
 var users = require("./db/users");
 var programs = require("./db/programs");
@@ -7,7 +8,7 @@ var programs = require("./db/programs");
 
 /* GET home page. */
 router.get("/", function (request, response) {
-    response.sendFile("index.html", { root: __dirname + "/public" });
+    response.sendFile(path.join(__dirname, "../public", "index.html"));
 });
 
 router.get("/programs", function (request, response) {
