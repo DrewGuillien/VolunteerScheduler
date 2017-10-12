@@ -3,16 +3,16 @@ var Schema = mongoose.Schema;
 
 var activitySchema = Schema({
     id: String,
-    programId: String,
+    programId: { type: Schema.Types.ObjectId, ref: "Program"},
     
     title: String,
     description: String,
 
     shifts: [{ startTime: Date, endTime: Date, minPositions: Number, maxPositions: Number }],
-    volunteers: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }]
+    volunteers: [{ type: Schema.Types.ObjectId, ref: "User" }]
 });
 
-userSchema.set('toJSON', {
+activitySchema.set('toJSON', {
     transform: function (doc, result, options) {
         result.id = result._id;
         // remove mongo internal fields
@@ -21,6 +21,6 @@ userSchema.set('toJSON', {
     }
 });
 
-var Activity = mongoose.Model("Activity", activitySchema);
+var Activity = mongoose.model("Activity", activitySchema);
 
 module.exports = Activity;

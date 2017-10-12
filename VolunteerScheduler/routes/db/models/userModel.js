@@ -8,7 +8,7 @@ var userSchema = Schema({
     name: { first: String, last: String },
     email: String,
 
-    enabled: boolean
+    enabled: Boolean
 });
 
 userSchema.set('toJSON',  {
@@ -20,6 +20,6 @@ userSchema.set('toJSON',  {
     }
 });
 
-var User = mongoose.Model("User", userSchema);
+var User = mongoose.model("User", userSchema);
 
 module.exports = User;

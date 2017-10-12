@@ -7,7 +7,7 @@ var programSchema = Schema({
     description: String,
 });
 
-userSchema.set("toJSON", {
+programSchema.set("toJSON", {
     transform: function (doc, result, options) {
         result.id = result._id;
         // remove mongo internal fields
@@ -16,6 +16,6 @@ userSchema.set("toJSON", {
     }
 });
 
-var Program = mongoose.Model("Program", programSchema);
+var Program = mongoose.model("Program", programSchema);
 
 module.exports = Program;
