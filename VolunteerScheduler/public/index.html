@@ -26,28 +26,43 @@
 </head>
 <body>
     <nav id="topnav" class="navbar navbar-inverse navbar-static-top" role="navigation" ng-controller="Volunteer.Navigation.Controller">
-        <ul class="nav navbar-nav navbar-right">
-            <li class="dropdown" ng-if="isAuthenticated()">
-                <a class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expand="false">
-                    <span class="glyphicon glyphicon-user"></span>
-                    {{username()}}
-                    <span class="caret"></span>
-                </a>
-                <ul class="dropdown-menu" role="menu">
-                    <!-- Edit Profile -->
-                    <li role="presentation">
-                        <a role="menuitem" href="#/profile">Profile</a>
-                    </li>
-                    <!-- Divider -->
-                    <li role="presentation" class="divider">
-                    <li role="presentation">
-                        <a role="menuitem" href="#/" ng-click="logout()">
-                            <span class="glyphicon glyphicon-log-out"></span>
-                            Logout
-                        </a>
-                </ul>
-            </li>
-        </ul>
+        <div class="collapse navbar-collapse">
+            <ul class="nav navbar-nav">
+
+                <!-- Admin Dashboard -->
+                <li>
+                    <a href="#/adminDashboard">Admin Dashboard</a>
+                </li>
+
+                <!-- Programs -->
+                <li>
+                    <a href="#/programs">Programs</a>
+                </li>
+            </ul>
+            <ul class="nav navbar-nav navbar-right">
+                <li class="dropdown" ng-if="isAuthenticated()">
+                    <a class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expand="false">
+                        <span class="glyphicon glyphicon-user"></span>
+                        {{username()}}
+                        <span class="caret"></span>
+                    </a>
+                    <ul class="dropdown-menu" role="menu">
+                        <!-- Edit Profile -->
+                        <li role="presentation">
+                            <a role="menuitem" href="#/profile">Profile</a>
+                        </li>
+                        <!-- Divider -->
+                        <li role="presentation" class="divider">
+                        <li role="presentation">
+                            <a role="menuitem" href="#/" ng-click="logout()">
+                                <span class="glyphicon glyphicon-log-out"></span>
+                                Logout
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
     </nav>
     <div class="container">
         <div ng-view></div>

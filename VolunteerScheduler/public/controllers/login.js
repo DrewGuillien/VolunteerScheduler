@@ -45,7 +45,7 @@
                 $scope.errorMessage = "";
 
                 //Session.create(response.data);
-                getPath();
+                //getPath();
                 $location.url($location.path());
             },
             function (error) {

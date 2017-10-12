@@ -1,4 +1,4 @@
-﻿angular.module("Volunteer.App").factory("Session.Service", function() {
+﻿angular.module("Session", []).factory("Session.Service", function() {
 	var service = {};
 	
 	service.user = function() {
