@@ -43,6 +43,9 @@
     <Compile Include="public\javascripts\Session.js">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="routes\db\activities.js">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="routes\db\models\activityModel.js">
       <SubType>Code</SubType>
     </Compile>

@@ -21,8 +21,8 @@
     <script src="controllers/adminDashboard.js"></script>
 
     <!-- Custom Scripts -->
-    <script src="javascripts/Session.js"></script>
     <script src="javascripts/client.js"></script>
+    <script src="javascripts/Session.js"></script>
 
 </head>
 <body>
@@ -31,15 +31,15 @@
             <ul class="nav navbar-nav">
 
                 <li>
-                    <a href="#">Volunteer Scheduler</a>
+                    <a href="#/programs">Volunteer Scheduler</a>
                 </li>
                 <!-- Admin Dashboard -->
-                <li>
-                    <a href="#/adminDashboard">Admin Dashboard</a>
+                <li ng-if="isAuthenticated()"> <!-- TODO change to hasRole(admin) -->
+                    <a href="#/admin/dashboard">Admin Dashboard</a>
                 </li>
 
                 <!-- Programs -->
-                <li>
+                <li ng-if="isAuthenticated()"> <!-- TODO change to hasRole(programManager) || hasRole(volunteer)-->
                     <a href="#/programs">Programs</a>
                 </li>
             </ul>

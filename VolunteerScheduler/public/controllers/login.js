@@ -1,5 +1,5 @@
 ﻿angular.module("Volunteer.App")
-    .controller("Volunteer.Login.Controller", ["$scope", "$http", "$location", function ($scope, $http, $location) {
+    .controller("Volunteer.Login.Controller", ["$scope", "$http", "$location", "Session", function ($scope, $http, $location, Session) {
     $scope.username = "";
     $scope.password = "";
     $scope.hasError = false;
@@ -10,11 +10,11 @@
     var getPath = function () {
         $location.path('/programs');
     /*
-        if (Session.hasRole("ROLE_ADMIN")) {
+        if (Session.hasRole("admin")) {
             $location.path("/admin/dashboard");
-        } else if (Session.hasRole("ROLE_PROGRAM_MANAGER")) {
+        } else if (Session.hasRole("program_manager")) {
             $location.path("/programs");
-        } else if (Session.hasRole("ROLE_USER")) {
+        } else if (Session.hasRole("volunteer")) {
             $locatoin.path("/programs");
         } else {
             $scope.hasError = true;
@@ -44,7 +44,7 @@
                 $scope.hasError = false;
                 $scope.errorMessage = "";
 
-                //Session.create(response.data);
+                Session.create(response.data);
                 getPath();
 
                 $location.url($location.path());

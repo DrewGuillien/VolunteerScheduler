@@ -1,4 +1,4 @@
-﻿angular.module("Volunteer.App", ["ngRoute", "Session"])
+﻿angular.module("Volunteer.App", ["ngRoute"])
     .config(["$locationProvider", "$routeProvider", function ($locationProvider, $routeProvider) {
         $locationProvider.hashPrefix("");
         $routeProvider
@@ -14,7 +14,7 @@
                 templateUrl: "/views/shared/pages/activities.html",
                 controller: "Volunteer.Activities.Controller"
             })
-            .when("/adminDashboard", {
+            .when("/admin/dashboard", {
                 templateUrl: "/views/admin/adminDashboard.html",
                 controller: "Volunteer.Admin.Dashboard.Controller"
             })

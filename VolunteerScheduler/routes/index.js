@@ -4,9 +4,8 @@ var path = require("path");
 
 var users = require("./db/users");
 var programs = require("./db/programs");
-// var activities = require("./db/activities");
+var activities = require("./db/activities");
 
-/* GET home page. */
 
 router.post("/login", function (request, response) {
     users.findByUsername(request.body.username, function (err, user) {
@@ -14,6 +13,7 @@ router.post("/login", function (request, response) {
             console.log(err);
             response.send(401);
         } else {
+            // use bcrypt
             if (request.body.password && user[0] && user[0].password && request.body.password == user[0].password) {
                 response.json(user);
             } else {
@@ -21,6 +21,10 @@ router.post("/login", function (request, response) {
             }
         }
     });
+});
+
+router.post("/logout", function (request, response) {
+    delete request.session;
 });
 
 router.post("/users", function (request, response) {
@@ -33,6 +37,7 @@ router.post("/users", function (request, response) {
     });
 });
 
+/* GET home page. */
 router.get("/", function (request, response) {
     response.sendFile(path.join(__dirname, "../public", "index.html"));
 });

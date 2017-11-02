@@ -1,7 +1,7 @@
 ﻿var app = angular.module("Volunteer.App"); //Get App
 
 app.controller("Volunteer.Navigation.Controller",
-    ["$scope", "$http", "$location", "Session.Service",
+    ["$scope", "$http", "$location", "Session",
         function ($scope, $http, $location, Session) {
             // Passing the Session authentication check to the scope
             $scope.isAuthenticated = Session.isAuthenticated;
