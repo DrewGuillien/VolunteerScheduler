@@ -2,3 +2,21 @@
     margin: 0;
     padding: 0;
 }
+
+.activity {
+    display: inline-block;
+    border: 1px solid black;
+    border-radius: 10pt;
+    padding: 10pt;
+}
+
+.shift {
+    background-color: lightgray;
+    border-radius: 10pt;
+    padding: 10pt;
+    margin: 5pt 0;
+}
+
+.halfWidth {
+    width: 50%
+}

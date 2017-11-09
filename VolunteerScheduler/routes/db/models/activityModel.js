@@ -8,7 +8,7 @@ var activitySchema = Schema({
     title: String,
     description: String,
 
-    shifts: [{ startTime: Date, endTime: Date, minPositions: Number, maxPositions: Number }],
+    shifts: [{ date: Date, startTime: String, endTime: String, minPositions: Number, maxPositions: Number }],
     volunteers: [{ type: Schema.Types.ObjectId, ref: "User" }]
 });
 

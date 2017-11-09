@@ -7,7 +7,7 @@ app.controller("Volunteer.Navigation.Controller",
             $scope.isAuthenticated = Session.isAuthenticated;
 
             // Define username as a function that grabs the user from the session
-            $scope.username = function () {
+            $scope.username = function() {
                 var user = Session.user();
                 return user && user.username;
             }
@@ -33,7 +33,6 @@ app.factory("AuthInterceptor", ["$q", "$location", "$locationProvider", "Session
 
             Session.destroy();
             $location.path("/login");
-            //$location.path("programs");
             return $q.reject(rejection);
         }
     }
@@ -44,7 +43,6 @@ app.config(["$routeProvider", "$httpProvider",
         $routeProvider
             .otherwise({
                 redirectTo: "/login"
-                //redirectTo: "/programs"
             });
     }
 ]);

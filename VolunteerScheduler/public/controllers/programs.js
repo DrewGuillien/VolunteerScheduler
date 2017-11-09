@@ -1,8 +1,11 @@
 ﻿angular.module("Volunteer.App")
-    .controller("Volunteer.Programs.Controller", ["$scope", "$http", "$location", "$routeParams", function ($scope, $http, $location, $routeParams) {
+    .controller("Volunteer.Programs.Controller", ["$scope", "$http", "$location", "$routeParams", "Session", function ($scope, $http, $location, $routeParams, Session) {
         $scope.form = false;
-        var ctrl = this;
+        $scope.title = "";
+        $scope.description = "";
+        $scope.activities = [];
 
+        $scope.hasRole = Session.hasRole;
 
         $scope.updateList = function () {
             $http.get("/programs").then(function (response) {
@@ -25,10 +28,14 @@
             $scope.form = true;
         };
 
+        $scope.cancel = function () {
+            $scope.title = "";
+            $scope.description = "";
+            $scope.activities = [];
+            $scope.form = false;
+        }
+
         $scope.add = function () {
-            console.log("add hit");
-            console.log(ctrl.title);
-            console.log(ctrl.description);
             $scope.error = "";
             if (!ctrl.title) {
                 $scope.hasError = true;
@@ -50,11 +57,53 @@
             if (!$scope.hasError) {
                 $http(request).then(function (response) {
                     $scope.updateList();
-                }, function () {
+                }, function (error) {
                     
                 });
             }
         };
+
+        $scope.remove = function (programId) {
+            if (programId) {
+                var request = {
+                    method: "DELETE",
+                    url: "/programs/" + programId
+                }
+                $http(request).then(function (response) {
+                    $scope.updateList();
+                }, function (error) {
+
+                });
+            }
+        }
+
+        $scope.addActivity = function () {
+            $scope.activities.push({
+                title: "",
+                description: "",
+                date: "",
+                shifts: [],
+                volunteers: [], // Will not be used when created
+                addShift: function () {
+                    var activity = this;
+                    activity.shifts.push({
+                        startTime: "12:00",
+                        endTime: "13:00",
+                        minVolunteers: 1,
+                        maxVolunteers: 1,
+                        remove: function () {
+                            var index = activity.shifts.indexOf(this);
+                            if (index > -1) activity.shifts.splice(index, 1);
+                        }
+                    });
+                },
+                remove: function () {
+                    var index = $scope.activities.indexOf(this);
+                    if (index > -1) $scope.activities.splice(index, 1);
+                }
+            });
+            $scope.activities[$scope.activities.length].addShift();
+        }
 
         $scope.updateList();
     }

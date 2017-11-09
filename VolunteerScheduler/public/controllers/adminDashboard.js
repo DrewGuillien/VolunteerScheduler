@@ -1,25 +1,35 @@
 ﻿angular.module("Volunteer.App")
     .controller("Volunteer.Admin.Dashboard.Controller", ["$scope", "$http", "$location", function ($scope, $http, $location) {
-        var ctrl = this;
+        $scope.message = "";
         $scope.create = function () {
-            ctrl.user.enabled = true;
-            ctrl.user.roles = [];
-            ctrl.admin && ctrl.user.roles.push("ROLE_ADMIN");
-            ctrl.projectManager && ctrl.user.roles.push("ROLE_PROJECT_MANAGER");
-            ctrl.volunteer && ctrl.user.roles.push("ROLE_VOLUNTEER");
+            $scope.user.enabled = true;
+            $scope.user.role = [];
+            switch ($scope.role) {
+                case "admin":
+                    $scope.user.role.push("admin");
+                case "program_manager":
+                    $scope.user.role.push("program_manager");
+                case "volunteer":
+                    $scope.user.role.push("volunteer");
+            }
             var request = {
                 method: "POST",
                 url: "/users",
                 headers: {
                     "Content-Type": "application/json"
                 },
-                data: ctrl.user
+                data: $scope.user
             }
             $http(request).then(function (response) {
-                console.log(response);
+                $scope.message = "User successfully created";
+                $scope.clear();
             }, function (err) {
-
+                $scope.message = err;
             });
+        }
+        $scope.clear = function () {
+            $scope.user = {};
+            $scope.role = "";
         }
     }
 ]);

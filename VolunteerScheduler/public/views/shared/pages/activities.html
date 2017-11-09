@@ -1,7 +1,18 @@
-﻿<div>
-    <table>
+﻿<div class="container" ng-controller="Volunteer.Activities.Controller as $ctrl">
+    <table class="table table-striped">
+        <thead class="thead-inverse">
+            <tr>
+                <th>Title</th>
+                <th>Description</th>
+                <th>Shifts</th>
+                <th>Volunteers</th>
+            </tr>
+        </thead>
         <tr ng-repeat="activity in activities">
-            <td></td>
+            <td>{{activity.title}}</td>
+            <td>{{activity.description}}</td>
+            <td><button ng-click="viewShifts">View Shifts</button></td>
+            <td><button ng-click="viewVolunteers">View Volunteers</button></td>
         </tr>
     </table>
 </div>

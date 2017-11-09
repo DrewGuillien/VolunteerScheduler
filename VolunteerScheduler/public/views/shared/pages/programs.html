@@ -1,40 +1,58 @@
 ﻿<div class="container" ng-controller="Volunteer.Programs.Controller as $ctrl">
     <button ng-if="!form" ng-click="createForm()" name="createProgramForm" class="btn btn-primary pull-right">Add New Program</button>
-    <form ng-if="form" class="form col-md-4">
-        <div>
+    <form ng-if="form" class="form col-6-offset-3">
+        <label>Title</label>
+        <input type="text" ng-model="title" class="form-control"/>
+        <label>Description</label>
+        <textarea ng-model="description" class="form-control"></textarea>
+        <label>Activities ({{activities.length}})</label>
+        <div ng-repeat="activity in activities" class="activity">
+            <button ng-click="activity.remove()" class="btn btn-danger glyphicon glyphicon-remove pull-right"></button>
             <label>Title</label>
-            <input type="text" ng-model="$ctrl.title" class="form-control"/>
-            {{title}}
-        </div>
-        <div>
+            <input type="text" ng-model="activity.title" class="form-control"/>
             <label>Description</label>
-            <input type="text" ng-model="$ctrl.description" class="form-control"/>
-            {{description}}
+            <textarea ng-model="activity.description" class="form-control"></textarea>
+            <label>Shifts ({{activity.shifts.length}})</label>
+            <div ng-repeat="shift in activity.shifts" class="shift">
+                <button ng-click="shift.remove()" class="btn btn-danger glyphicon glyphicon-remove pull-right"></button>
+                <label>Date</label>
+                <input type="date" ng-model="activity.date" class="form-control" />
+                <label>Start Time</label>
+                <input type="time" ng-model="shift.startTime" class="form-control"/>
+                <label>End Time</label>
+                <input type="time" ng-model="shift.endTime" class="form-control"/>
+                <label>Minimum Volunteers</label>
+                <input type="number" ng-model="shift.minVolunteers" class="form-control"/>
+                <label>Maximum Volunteers</label>
+                <input type="number" ng-model="shift.maxVolunteers" class="form-control"/>
+            </div>
+            <button ng-click="activity.addShift()" class="btn btn-primary">Add Shift</button>
         </div>
-        <div>
-            <input ng-click="add()" type="submit" value="Add" class="btn btn-primary" />
+        <button ng-click="addActivity()" class="btn btn-primary">Add Activity</button>
+        <div class="btn-group pull-right">
+            <input ng-click="add()" type="submit" value="Add New Program" class="btn btn-primary center" />
+            <button ng-click="cancel()" class="btn btn-danger">Cancel</button>
             <span ng-if="hasError">{{error}}</span>
         </div>
     </form>
-    <table class="table table-striped">
+
+    <table ng-if="!form" class="table table-striped">
         <thead class="thead-inverse">
-            <th>
-                <td>Title</td>
-                <td>Description</td>
-                <td colspan="3" class="center">Actions</td>
-            </th>
+            <tr>
+                <th>Title</th>
+                <th>Description</th>
+                <th colspan="3" class="center">Actions</th>
+            </tr>
         </thead>
         <tbody>
             <tr ng-repeat="program in programs">
-                <td></td>
                 <td>{{program.title}}</td>
                 <td>{{program.description}}</td>
                 <td><button ng-click="view(program.id)" class="btn btn-success">View</button></td>
-                <td><button ng-click="edit(program.id)" class="btn btn-default">Edit</button></td>
-                <td><button ng-click="delete(program.id)" class="btn btn-danger">Delete</button></td>
+                <td><button ng-click="edit(program.id)" ng-if="hasRole('program_manager')" class="btn btn-default">Edit</button></td>
+                <td><button ng-click="remove(program.id)" ng-if="hasRole('program_manager')" class="btn btn-danger">Remove</button></td>
             </tr>
             <tr ng-if="empty">
-                <td></td>
                 <td colspan="5">There are no programs</td>
             </tr>
         </tbody>
