@@ -3,14 +3,14 @@
         $scope.message = "";
         $scope.create = function () {
             $scope.user.enabled = true;
-            $scope.user.role = [];
+            $scope.user.roles = [];
             switch ($scope.role) {
                 case "admin":
-                    $scope.user.role.push("admin");
+                    $scope.user.roles.push("admin");
                 case "program_manager":
-                    $scope.user.role.push("program_manager");
+                    $scope.user.roles.push("program_manager");
                 case "volunteer":
-                    $scope.user.role.push("volunteer");
+                    $scope.user.roles.push("volunteer");
             }
             var request = {
                 method: "POST",

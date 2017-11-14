@@ -8,8 +8,8 @@
     //$scope.isAuthenticated = Session.isAuthenticated;
 
     var getPath = function () {
-        $location.path('/programs');
-    /*
+        //$location.path('/programs');
+    
         if (Session.hasRole("admin")) {
             $location.path("/admin/dashboard");
         } else if (Session.hasRole("program_manager")) {
@@ -19,17 +19,14 @@
         } else {
             $scope.hasError = true;
             $scope.errorMessage = "User does not have a valid role";
-        }*/
+        }
     }
 
-    /*
     if (Session.isAuthenticated) {
         getPath();
-    }*/
+    }
 
     $scope.login = function () {
-        console.log($scope.username);
-        console.log($scope.password);
         var request = {
             method: "POST",
             url: "/login",
@@ -55,4 +52,34 @@
             }
         );
     }
+
+    //Temporary Code
+    $scope.createAdmin = function () {
+        var request = {
+            method: "POST",
+            url: "/users",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            data: {
+                username: "Admin",
+                password: "1234",
+                name: { first: "Ad", last: "Min" },
+                email: "admin@VolunteerScheduler.com",
+                roles: ["admin", "program_manager", "volunteer"],
+                enabled: true
+            }
+        };
+
+        $http(request).then(
+            function (response) {
+                $scope.hasError = true;
+                $scope.errorMessage = "Admin account created";
+            },
+            function (error) {
+                $scope.hasError = true;
+                $scope.errorMessage = error.message;
+            }
+        );
+    };
 }]);

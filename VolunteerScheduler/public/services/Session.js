@@ -12,7 +12,7 @@
     service.hasRole = function (roleName) {
         var user = service.user();
         if (user) {
-            return user.role.some((role) => role === roleName);
+            return user.roles.some((role) => role === roleName);
         } else return false;
     }
 

@@ -30,9 +30,10 @@ router.post("/logout", function (request, response) {
 router.post("/users", function (request, response) {
     users.save(request.body, function (err, user) {
         if (err) {
-            response.send(500);
+            console.log(err);
+            response.status(500).end();
         } else {
-            response.send(200);
+            response.status(200).end();
         }
     });
 });

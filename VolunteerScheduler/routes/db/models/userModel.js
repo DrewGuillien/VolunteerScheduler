@@ -3,22 +3,25 @@ var mongoose = require("mongoose");
 var Schema = mongoose.Schema;
 
 var userSchema = new Schema({
-    role: [String],
     username: {
         type: String,
         required: true,
         unique: true
     },
     password: {
-        type: String, //encrypted by bcrypt
+        type: String,
         required: true
     },
     name: { first: String, last: String },
     email: String,
+    roles: [String],
 
     enabled: Boolean
 });
 
+/*
+    Encrypts the password before saving the user object to the database
+*/
 userSchema.pre("save", function (next) {
     var user = this;
     if (user.isModified("password") || user.isNew) {
@@ -39,6 +42,10 @@ userSchema.pre("save", function (next) {
     }
 });
 
+/*
+    Provides the ablility to compare a password to the encrypted password without
+    requiring 'bcrypt' whereever you would like to compare the password
+*/
 userSchema.methods.comparePassword = function (password, callback) {
     bcrypt.compare(password, this.password, function (error, isMatch) {
         if (error) {
@@ -48,10 +55,12 @@ userSchema.methods.comparePassword = function (password, callback) {
     });
 };
 
+/*
+    Removes mongo internal fields before converting to JSON
+*/
 userSchema.set('toJSON',  {
     transform: function (doc, result, options) {
         result.id = result._id;
-        // remove mongo internal fields
         delete result._id;
         delete result._v;
     }
