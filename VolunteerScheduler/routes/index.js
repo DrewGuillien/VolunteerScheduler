@@ -13,12 +13,17 @@ router.post("/login", function (request, response) {
             console.log(err);
             response.send(401);
         } else {
-            // use bcrypt
-            if (request.body.password && user[0] && user[0].password && request.body.password == user[0].password) {
-                response.json(user);
-            } else {
-                response.send(401);
-            }
+            console.log(user);
+            user.comparePassword(request.body.password, function (error, isMatch) {
+                if (error) {
+                    response.status(500).end();
+                } else if (!isMatch) {
+                    response.send(401, "Username or password incorrect");
+                } else {
+                    delete user.password;
+                    response.status(200).send(user);
+                }
+            });
         }
     });
 });

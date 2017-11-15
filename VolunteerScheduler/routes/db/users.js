@@ -12,7 +12,7 @@ function findById(userId, callback) {
 module.exports.findById = findById;
 
 function findByUsername(username, callback) {
-    User.find({ username: username }, callback);
+    User.findOne({ username: username }, callback);
 }
 module.exports.findByUsername = findByUsername;
 

@@ -41,7 +41,7 @@
                 $scope.hasError = false;
                 $scope.errorMessage = "";
 
-                Session.create(response.data[0]);
+                Session.create(response.data);
                 getPath();
 
                 $location.url($location.path());
