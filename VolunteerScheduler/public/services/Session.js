@@ -3,7 +3,6 @@
 
     service.user = function () {
         if (sessionStorage.user) {
-            console.log(sessionStorage.user);
             return JSON.parse(sessionStorage.user);
         } else {
             return null;

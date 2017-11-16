@@ -17,10 +17,10 @@ app.controller("Volunteer.Navigation.Controller",
 
             // Logout destroys session and redirects to login view
             $scope.logout = function () {
-                $http.get("/logout").then(function () {
+                //$http.get("/logout").then(function () {
                     Session.destroy();
                     $location.path("/login");
-                });
+                //});
             }
         }
     ]
