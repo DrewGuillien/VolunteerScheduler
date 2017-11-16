@@ -41,6 +41,16 @@ router.post("/users", function (request, response) {
     });
 });
 
+router.get("/users/grabAll", function (request, response) {
+    users.findAll(function (error, userList) {
+        if (error) {
+            response.status(404, "Something went terribly wrong, good sir");
+        } else {
+            response.send(200, userList);
+        }
+    });
+});
+
 /* GET home page. */
 router.get("/", function (request, response) {
     response.sendFile(path.join(__dirname, "../public", "index.html"));
