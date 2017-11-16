@@ -9,13 +9,13 @@
 
     var getPath = function () {
         //$location.path('/programs');
-    
+
         if (Session.hasRole("admin")) {
             $location.path("/admin/dashboard");
         } else if (Session.hasRole("program_manager")) {
             $location.path("/programs");
         } else if (Session.hasRole("volunteer")) {
-            $locatoin.path("/programs");
+            $location.path("/programs");
         } else {
             $scope.hasError = true;
             $scope.errorMessage = "User does not have a valid role";

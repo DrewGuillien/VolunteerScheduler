@@ -27,6 +27,7 @@
 
     service.destroy = function () {
         delete sessionStorage.user;
+        delete localStorage.user;
     }
 
     return service;

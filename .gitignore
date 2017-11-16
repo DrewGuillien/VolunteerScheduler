@@ -240,3 +240,5 @@ ModelManifest.xml
 
 # FAKE - F# Make
 .fake/
+/VolunteerScheduler/package-lock.json
+/VolunteerScheduler/package.json

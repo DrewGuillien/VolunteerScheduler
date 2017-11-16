@@ -15,12 +15,13 @@ app.controller("Volunteer.Navigation.Controller",
             // Get role from session
             $scope.hasRole = Session.hasRole;
 
-            // Logout destroys session and redirects to login view
+            //Logout destroys session and redirects to login view
             $scope.logout = function () {
-                $http.get("/logout").then(function () {
-                    Session.destroy();
-                    $location.path("/login");
-                });
+                //$http.get("/logout").then(function () {
+                //    Session.destroy();
+                //    $location.path("/login");
+                //});
+                Session.destroy();  
             }
         }
     ]
