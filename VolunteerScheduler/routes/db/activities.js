@@ -1,17 +1,18 @@
 ﻿var Activity = require("./models/activityModel");
+var ObjectId = require("mongoose").Types.ObjectId;
 
 function save(activity, callback) {
     Activity(activity).save(callback);
 }
 module.exports.save = save;
 
-function findById(activityId, callback) {
-    Activity.findById(activityId, callback);
+function findById(programId, activityId, callback) {
+    Activity.find({ programId: programId, _id: activityId }, callback);
 }
 module.exports.findById = findById;
 
-function findAll(callback) {
-    Activity.find({}, callback);
+function findAll(programId, callback) {
+    Activity.find({programId: new ObjectId(programId)}, callback);
 }
 module.exports.findAll = findAll;
 

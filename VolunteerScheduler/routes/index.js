@@ -8,14 +8,12 @@ var activities = require("./db/activities");
 
 
 router.post("/login", function (request, response) {
-    users.findByUsername(request.body.username, function (err, user) {
-        if (err) {
-            console.log(err);
+    users.findByUsername(request.body.username, function (userError, user) {
+        if (userError) {
             response.send(401);
         } else {
-            console.log(user);
-            user.comparePassword(request.body.password, function (error, isMatch) {
-                if (error) {
+            user.comparePassword(request.body.password, function (passwordError, isMatch) {
+                if (passwordError) {
                     response.status(500).end();
                 } else if (!isMatch) {
                     response.send(401, "Username or password incorrect");
@@ -100,22 +98,55 @@ router.delete("/programs/:programId", function (request, response) {
 
 router.get("/programs/:programId/activities", function (request, response) {
     
+    activities.findAll(request.params.programId, function (error, activityList) {
+        if (error) {
+            response.status(404, "No activities found");
+        } else {
+            response.send(200, activityList);
+        }
+    });
 });
 
 router.get("/programs/:programId/activities/:activityId", function (request, response) {
-    
+    activities.findById(request.params.programId, request.params.activityId, function (error, activity) {
+        if (error) {
+            response.status(404, "Activity not found");
+        } else {
+            response.send(200, activity);
+        }
+    });
 });
 
 router.post("/programs/:programId/activities", function (request, response) {
-
+    var activity = request.body;
+    activity.programId = request.params.programId;
+    activities.save(activity, function (error) {
+        if (error) {
+            response.status(500, "Error creating activity");
+        } else {
+            response.status(200).end();
+        }
+    });
 });
 
 router.put("/programs/:programId/activities/:activityId", function (request, response) {
-
+    activities.update(request.params.activityId, request.body, function (error) {
+        if (error) {
+            response.status(500, "Error updating activity");
+        } else {
+            response.status(200).end();
+        }
+    });
 });
 
 router.delete("/programs/:programId/activities/:activityId", function (request, response) {
-
+    activities.remove(request.params.activityId, function (error) {
+        if (error) {
+            response.status(500, "Error deleting activity");
+        } else {
+            response.status(200).end();
+        }
+    });
 });
 
 module.exports = router;

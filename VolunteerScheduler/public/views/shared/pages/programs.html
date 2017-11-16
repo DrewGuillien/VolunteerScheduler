@@ -2,29 +2,29 @@
     <button ng-if="!form" ng-click="createForm()" name="createProgramForm" class="btn btn-primary pull-right">Add New Program</button>
     <form ng-if="form" class="form col-6-offset-3">
         <label>Title</label>
-        <input type="text" ng-model="title" class="form-control"/>
+        <input type="text" ng-model="program.title" class="form-control"/>
         <label>Description</label>
-        <textarea ng-model="description" class="form-control"></textarea>
+        <textarea ng-model="program.description" class="form-control"></textarea>
         <label>Activities ({{activities.length}})</label>
         <div ng-repeat="activity in activities" class="activity">
             <button ng-click="activity.remove()" class="btn btn-danger glyphicon glyphicon-remove pull-right"></button>
             <label>Title</label>
-            <input type="text" ng-model="activity.title" class="form-control"/>
+            <input type="text" ng-model="activity.title" ng-require class="form-control"/>
             <label>Description</label>
-            <textarea ng-model="activity.description" class="form-control"></textarea>
+            <textarea ng-model="activity.description" ng-require class="form-control"></textarea>
             <label>Shifts ({{activity.shifts.length}})</label>
             <div ng-repeat="shift in activity.shifts" class="shift">
                 <button ng-click="shift.remove()" class="btn btn-danger glyphicon glyphicon-remove pull-right"></button>
                 <label>Date</label>
-                <input type="date" ng-model="activity.date" class="form-control" />
+                <input type="date" ng-model="activity.date" ng-require class="form-control" />
                 <label>Start Time</label>
-                <input type="time" ng-model="shift.startTime" class="form-control"/>
+                <input type="time" ng-model="shift.startTime" ngMax="{{shift.endTime}}" ng-require class="form-control"/>
                 <label>End Time</label>
-                <input type="time" ng-model="shift.endTime" class="form-control"/>
+                <input type="time" ng-model="shift.endTime" ngMin="{{shift.startTime}}" ng-require class="form-control"/>
                 <label>Minimum Volunteers</label>
-                <input type="number" ng-model="shift.minVolunteers" class="form-control"/>
+                <input type="number" ng-model="shift.minVolunteers" ng-require class="form-control"/>
                 <label>Maximum Volunteers</label>
-                <input type="number" ng-model="shift.maxVolunteers" class="form-control"/>
+                <input type="number" ng-model="shift.maxVolunteers" ng-require class="form-control"/>
             </div>
             <button ng-click="activity.addShift()" class="btn btn-primary">Add Shift</button>
         </div>
