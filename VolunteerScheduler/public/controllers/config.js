@@ -1,4 +1,4 @@
-﻿angular.module("Volunteer.App", ["ngRoute", "ui.bootstrap"])
+﻿angular.module("Volunteer.App", ["ngRoute", "ngAnimate", "ngSanitize", "ui.bootstrap"])
     .config(["$locationProvider", "$routeProvider", function ($locationProvider, $routeProvider) {
         $locationProvider.hashPrefix("");
         $routeProvider

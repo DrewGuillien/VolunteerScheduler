@@ -7,7 +7,7 @@ function save(activity, callback) {
 module.exports.save = save;
 
 function findById(programId, activityId, callback) {
-    Activity.find({ programId: programId, _id: activityId }, callback);
+    Activity.findOne({ programId: programId, _id: activityId }, callback);
 }
 module.exports.findById = findById;
 

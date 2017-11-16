@@ -149,4 +149,29 @@ router.delete("/programs/:programId/activities/:activityId", function (request, 
     });
 });
 
+//Volunteer
+router.put("/programs/:programId/activities/:activityId/shifts/:shiftId/volunteers/:userId", function (request, response) {
+    user.findById(request.params.userId, function (userError, user) {
+        if (userError) {
+            response.send(404, "User not found");
+        } else {
+            activities.findById(request.params.programId, request.params.activityId, function (activityError, activity) {
+                if (activityError) {
+                    response.send(404, "Activity not found");
+                } else {
+                    //TODO assign to specific shift
+                    activity.volunteers.push(user);
+                    activities.update(activity.id, activity, function (updateError) {
+                        if (updateError) {
+                            response.send(500, "Unable to volunteer for this activity");
+                        } else {
+                            response.status(200).end();
+                        }
+                    });
+                }
+            });
+        }
+    });
+});
+
 module.exports = router;

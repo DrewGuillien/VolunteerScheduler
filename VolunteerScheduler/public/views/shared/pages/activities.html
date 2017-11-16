@@ -18,4 +18,21 @@
             <td><button ng-if="hasRole('program_manager')" ng-click="remove(activity.id)" class="btn btn-danger">Remove</button></td>
         </tr>
     </table>
+
+    <script type="text/ng-template" id="volunteerModal.html">
+        <div class="modal-header">
+            <h3 class="modal-title" id="modal-title">For which shift would you like to volunteer?</h3>
+        </div>
+        <div class="modal-body" id="modal-body">
+            <ul>
+                <li ng-repeat="shift in $ctrl.activity.shifts">
+                    <a href="#" ng-click="$event.preventDefault(); $ctrl.selected.shift = shift">{{$ctrl.display(shift)}}</a>
+                </li>
+            </ul>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-primary" type="button" ng-click="$ctrl.ok()">OK</button>
+            <button class="btn btn-danger" type="button" ng-click="$ctrl.cancel()">Cancel</button>
+        </div>
+    </script>
 </div>
