@@ -91,6 +91,78 @@
             }
         }
 
+        //TODO: clean
+        $scope.finalize = function (programId) {
+            var programTitle;
+            var users;
+
+            //grab program
+            if (programId) {
+                var request = {
+                    method: "GET",
+                    url: "/programs/" + programId
+                }
+
+                $http(request).then(function (response) {
+                    programTitle = response.data.title;
+
+                    //grab users
+                    var request = {
+                        method: "GET",
+                        url: "/users/grabAll"
+                    }
+
+                    $http(request).then(function (response) {
+                        users = response.data;
+
+                        //construct email request
+                        var mailgunUrl = "https://api.mailgun.net/v3/sandbox0838e66b15a44816bf0b60b2b6e45540.mailgun.org/messages";
+                        var mailgunApiKey = window.btoa("api:key-57d186b66a182eb3e319ff702e045c44")
+
+                        var request = {
+                            method: 'POST',
+                            url: mailgunUrl,
+                            headers: {
+                                'Access-Control-Allow-Origin': '*',
+                                'content-type': 'application/x-www-form-urlencoded',
+                                'Authorization': 'Basic ' + mailgunApiKey
+                            },
+                            transformRequest: function (obj) {
+                                var str = [];
+                                for (var p in obj)
+                                    str.push(encodeURIComponent(p) + "=" + encodeURIComponent(obj[p]));
+                                return str.join("&");
+                            },
+                            data: null
+                        };
+
+                        //how am I spamming myself?!?!?!? :rage:
+                        users.forEach(function (user) {
+                            var dataJSON = {
+                                from: "postmaster@sandbox0838e66b15a44816bf0b60b2b6e45540.mailgun.org",
+                                to: user.email,
+                                subject: programTitle + " Schedule Finalized",
+                                text: "The schedule for program '" + programTitle + "' is now finalized. Please log in to verify your volunteer hours.",
+                                multipart: true
+                            };
+                            request.data = dataJSON;
+
+                            //send email for user
+                            $http(request).then(function (data) {
+                                console.log(data);
+                            }, function (data) {
+                                console.log(data);
+                            });
+                        });
+                    }, function (error) {
+                        console.log(error);
+                    });
+                }, function (error) {
+                    console.log(error);
+                });
+            }
+        }
+
         $scope.addActivity = function () {
             $scope.activities.push({
                 title: "",
