@@ -8,8 +8,14 @@ var activitySchema = Schema({
     title: String,
     description: String,
 
-    shifts: [{ date: Date, startTime: String, endTime: String, minPositions: Number, maxPositions: Number }],
-    volunteers: [{ type: Schema.Types.ObjectId, ref: "User" }]
+    shifts: [{
+        date: Date,
+        startTime: String,
+        endTime: String,
+        minPositions: Number,
+        maxPositions: Number,
+        volunteers: [{ type: Schema.Types.ObjectId, ref: "User" }]
+    }]
 });
 
 activitySchema.set('toJSON', {

@@ -97,11 +97,28 @@ router.put("/programs/:programId", function (request, response) {
 });
 
 router.delete("/programs/:programId", function (request, response) {
-    programs.remove(request.params.programId, function (error) {
+    // Remove all activities from the program before removing program
+    activities.findByProgramId(request.params.programId, function (error, activityList) {
         if (error) {
-            response.send(500, "Failed to remove program");
+            // No activities existed for program therefore there is no need to remove them
+            response.status(200).end();
         } else {
-            response.send(200);
+            var hasError = false;
+            activityList.forEach(function (activity) {
+                console.log(activity);
+                activities.remove(activity._id, function (error) {
+                    hasError = true;
+                });
+            });
+
+            // After activities are removed, then remove the program
+            programs.remove(request.params.programId, function (error) {
+                if (error) {
+                    response.send(500, "Failed to remove program");
+                } else {
+                    response.send(200);
+                }
+            });
         }
     });
 });
@@ -161,23 +178,21 @@ router.delete("/programs/:programId/activities/:activityId", function (request, 
 
 //Volunteer
 router.put("/programs/:programId/activities/:activityId/shifts/:shiftId/volunteers/:userId", function (request, response) {
-    user.findById(request.params.userId, function (userError, user) {
-        if (userError) {
-            response.send(404, "User not found");
+    activities.findById(request.params.programId, request.params.activityId, function (activityError, activity) {
+        if (activityError) {
+            response.status(404).send("Activity not found");
         } else {
-            activities.findById(request.params.programId, request.params.activityId, function (activityError, activity) {
-                if (activityError) {
-                    response.send(404, "Activity not found");
+            activity.shifts = activity.shifts.map(function (shift) {
+                if (shift.id == request.params.shiftId) {
+                    return shift.volunteers.push(request.params.userId);
+                }
+                return shift;
+            });
+            activities.update(activity._id, activity, function (updateError) {
+                if (updateError) {
+                    response.status(500).send("Unable to volunteer for this activity");
                 } else {
-                    //TODO assign to specific shift
-                    activity.volunteers.push(user);
-                    activities.update(activity.id, activity, function (updateError) {
-                        if (updateError) {
-                            response.send(500, "Unable to volunteer for this activity");
-                        } else {
-                            response.status(200).end();
-                        }
-                    });
+                    response.status(200).end();
                 }
             });
         }

@@ -8,10 +8,6 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" />
     <link rel="stylesheet" href="stylesheets/global.css" />
 
-    <!-- Bootstrap JS -->
-    <!--<script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>-->
-
     <!-- Angular -->
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.6/angular.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.6/angular-resource.min.js"></script>
@@ -36,6 +32,7 @@
 
 </head>
 <body>
+    <!-- Navigation Bar -->
     <nav id="topnav" class="navbar navbar-inverse navbar-static-top" role="navigation" ng-controller="Volunteer.Navigation.Controller">
         <div class="collapse navbar-collapse">
             <div class="navbar-header">
@@ -43,26 +40,33 @@
             </div>
             <ul class="nav navbar-nav">
                 <!-- Admin Dashboard -->
-                <li ng-if="hasRole('admin')"> <!-- TODO change to hasRole(admin) -->
+                <li ng-if="hasRole('admin')">
                     <a href="#/admin/dashboard">Admin Dashboard</a>
                 </li>
 
                 <!-- Programs -->
-                <li ng-if="isAuthenticated()"> <!-- TODO change to hasRole(programManager) || hasRole(volunteer)-->
+                <li ng-if="hasRole('programManager') || hasRole('volunteer')">
                     <a href="#/programs">Programs</a>
                 </li>
             </ul>
+            <!-- User options in right side of navbar -->
             <ul class="nav navbar-nav navbar-right">
                 <li uib-dropdown ng-if="isAuthenticated()">
+                    <!-- Username -->
                     <a uib-dropdown-toggle data-toggle="dropdown" role="button" aria-expand="false">
                         <span class="glyphicon glyphicon-user"></span>
                         {{username()}}
                         <span class="caret"></span>
                     </a>
+                    <!-- Dropdown options -->
                     <ul uib-dropdown-menu class="dropdown-menu" role="menu">
                         <!-- Edit Profile -->
                         <li role="presentation">
                             <a role="menuitem" href="#/profile">Profile</a>
+                        </li>
+                        <!-- Help Page -->
+                        <li role="presentation">
+                            <a role="menuitem" href="#/help">Help</a>
                         </li>
                         <!-- Divider -->
                         <li role="presentation" class="divider"></li>
@@ -78,8 +82,10 @@
             </ul>
         </div>
     </nav>
+
+    <!-- All other view templates will be swapped here when changing screens -->
     <div class="container">
-        <div ng-view></div>
+        <ng-view></ng-view>
     </div>
 </body>
 </html>
