@@ -54,7 +54,7 @@ router.get("/users", function (request, response) {
 router.get("/users/:userId", function (request, response) {
     users.findById(request.params.userId, function (error, user) {
         if (error) {
-            response.status(500, "Unable to get user");
+            response.status(404, "Unable to find user");
         } else {
             response.status(200).send(user);
         }
