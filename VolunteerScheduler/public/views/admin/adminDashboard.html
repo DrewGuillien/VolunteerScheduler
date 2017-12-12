@@ -1,8 +1,10 @@
-﻿<div ng-controller="Volunteer.Admin.Dashboard.Controller as $ctrl">
+﻿<div ng-controller="Volunteer.Reports.Controller as $ctrl">
 
-    <button ng-click="createUser()">
-        Create User
-    </button>
+    <button ng-click="createUser()"> Create User </button>
+    <button ng-click="searchUsers()"> Manage Users </button>
+    <button ng-click="showActivities()">View Activities</button>
+    <button ng-click="genReport()">Generate Report</button>
+
     <form class="form" ng-show="showUser">
         <p>Create a new user</p>
         <div>
@@ -48,10 +50,6 @@
         <button ng-click="create()" class="btn btn-primary">Create</button>
     </form>
 
-    <button ng-click="searchUsers()">
-        Manage Users
-    </button>
-
     <table class="table table-striped" ng-show="showTable">
         <thead id="TblHead">
             <tr>
@@ -81,5 +79,40 @@
         </tbody>
     </table>
 
-    <button ng-click="genReport()"
+    <div ng-show="isActVis">
+        <form>
+            <input type="text" ng-model="te" />
+            <button ng-click="searchTable(te)">Search</button>
+        </form>
+        <table class="table table-striped" >
+            <thead id="TblHead">
+                <tr>
+                    <td>Program</td>
+                    <td>Activity</td>
+                    <td>Shift</td>
+                    <td>Volunteer</td>
+                </tr>
+            </thead>
+            <tbody>
+                <tr ng-repeat="activity in activities">
+                    <td> {{activity.program}}</td>
+                    <td>{{activity.title}}</td>
+                    <td>
+                        <table>
+                            <tr ng-repeat="shift in activity.shifts">
+                                <td>{{shift.startTime | date:'yyyy-MM-dd HH:mm'}} - {{shift.endTime | date:'HH:mm'}}</td>
+                            </tr>
+                        </table>
+                    </td>
+                    <td>
+                        <table>
+                            <tr ng-repeat="shift in activity.shifts">
+                                <td>{{shift.usernames}}</td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </divng-show="isActVis">
 </div>

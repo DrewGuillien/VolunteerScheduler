@@ -3,7 +3,9 @@
         $scope.message = "";
         $scope.showUser = false;
         $scope.showTable = false;
+        $scope.isActVis = false;
         $scope.users;
+        $scope.activities;
 
         $scope.updateList = function () {
             $http.get("/users").then(function (response) {
@@ -14,6 +16,8 @@
 
         //manage users
         $scope.searchUsers = function () {
+            $scope.showUser = false;
+            $scope.isActVis = false;
             $scope.updateList();
             $scope.showTable = !$scope.showTable;
         }
@@ -106,6 +110,8 @@
 
         //create users
         $scope.createUser = function () {
+            $scope.showTable = false;
+            $scope.isActVis = false;
             $scope.showUser = !$scope.showUser;
         }
 
@@ -140,5 +146,86 @@
             $scope.user = {};
             $scope.role = "";
         }
+
+        //report gen
+        $scope.genReport = function () {
+            $location.path("/reports")
+        };
+
+        //show activities
+        $scope.showActivities = function () {
+            $scope.showUser = false;
+            $scope.showTable = false;
+            $scope.isActVis = !$scope.isActVis;
+            $scope.updateActivities();
+        }
+
+        $scope.updateActivities = function () {
+            $scope.activities = [];
+
+            $http.get("/activities").then(function (response) {
+                console.log(response.data);
+                $scope.activities = response.data;
+                $scope.activities.forEach(function (activity) {
+                    $http.get("/programs/" + activity.programId).then(function (response) {
+                        activity.program = response.data.title;
+                    })
+
+                    activity.shifts.forEach(function (shift) {
+                        shift.usernames = "";
+                        shift.volunteers.forEach(function (volunteer) {
+                            $http.get("/users/" + volunteer).then(function (response) {
+                                shift.usernames += " " + response.data.username;
+                            })
+                        });
+                    });
+
+                    console.log($scope.activities);
+                });
+                console.log($scope.activities);
+            });
+        }
+
+        $scope.searchTable = function (check) {
+            $scope.activities.forEach(function (activity) {
+                activity.shifts.forEach(function (shift) {
+                    var test = shift.usernames.indexOf(check);
+                    console.log("string: " + shift.usernames + " idx: " + test);
+                    if (test == -1) {
+                        shift.remove = true;
+                    }
+                })
+            });
+
+            $scope.activities.forEach(function (activity, index, object) {
+                activity.shifts.forEach(function (shift, index, object) {
+                    if (shift.remove === true) {
+                        object.splice(index, 1);
+                        console.log(index);
+                    }
+                })
+            });
+
+            //the code below brings great dishonor to my family, but I am too tired to care.
+            $scope.activities.forEach(function (activity, index, object) {
+                if (activity.shifts.length == 0) {
+                    object.splice(index, 1);
+                }
+            });
+
+            $scope.activities.forEach(function (activity, index, object) {
+                if (activity.shifts.length == 0) {
+                    object.splice(index, 1);
+                }
+            });
+
+            $scope.activities.forEach(function (activity, index, object) {
+                if (activity.shifts.length == 0) {
+                    object.splice(index, 1);
+                }
+            });
+
+        }
+
     }
 ]);

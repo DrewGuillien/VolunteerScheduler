@@ -1,3 +1,41 @@
-﻿<div>
-    Nothing is here.
+﻿<div ng-controller="Volunteer.Admin.Dashboard.Controller as $ctrl">
+    <h1>Latest Report</h1>
+    <table class="table table-striped">
+        <thead id="TblHead">
+            <tr>
+                <td>Program</td>
+            </tr>
+        </thead>
+        <tbody>
+            <tr ng-repeat="program in programs">
+                <td>{{program.title}}</td>
+                <td>
+                    <table class="table table-striped" ng-repeat="activity in program.activities">
+                        <thead>
+                            <tr>
+                                <td>Activity</td>
+                            </tr>
+                        </thead>
+                        <tr>
+                            <td>{{activity.title}}</td>
+                            <td>
+                                <table style="max-width:500px" class="table table-striped" ng-repeat="shift in activity.shifts">
+                                    <thead>
+                                        <tr>
+                                            <td>Shifts</td>
+                                            <td>Volunteers</td>
+                                        </tr>
+                                    </thead>
+                                    <tr>
+                                        <td>{{shift.startTime | date:'yyyy-MM-dd HH:mm'}} - {{shift.endTime | date:'HH:mm'}} </td>
+                                        <td ng-repeat="name in shift.names">{{name}}</td>
+                                    </tr>
+                                </table>
+                            </td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+        </tbody>
+    </table>
 </div>

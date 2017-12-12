@@ -51,6 +51,16 @@ router.get("/users", function (request, response) {
     });
 });
 
+router.get("/users/:userId", function (request, response) {
+    users.findById(request.params.userId, function (error, user) {
+        if (error) {
+            response.status(404, "Can not find user.")
+        } else {
+            response.json(user);
+        }
+    })
+});
+
 router.delete("/users/:userId", function (request, response) {
     users.remove(request.params.userId, function (error) {
         if (error) {
