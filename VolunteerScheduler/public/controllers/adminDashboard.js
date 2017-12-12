@@ -1,14 +1,11 @@
 ﻿angular.module("Volunteer.App")
-    .controller("Volunteer.Admin.Dashboard.Controller", ["$scope", "$http", "$location", function ($scope, $http, $location) {
+    .controller("Volunteer.Admin.Dashboard.Controller", ["$scope", "$http", "$q", "$location", "$uibModal", function ($scope, $http, $q, $location, $uibModal) {
         $scope.message = "";
-        $scope.showUser = false;
-        $scope.showTable = false;
-        $scope.users;
 
+        // Refresh table of users
         $scope.updateList = function () {
             $http.get("/users").then(function (response) {
                 $scope.users = response.data;
-                console.log($scope.users);
             });
         }
 
@@ -19,63 +16,89 @@
         }
 
         $scope.shouldShow = function (username, enabled) {
-            if (enabled === true && username != "Admin") {
-                return true;
-            } else {
-                return false;
-            }
+            return (enabled && username != "Admin");
         }
 
         $scope.isAdmin = function (username) {
-            if (username === "Admin") {
-                return false;
-            } else {
-                return true;
+            return username === "Admin";
+        }
+
+        $scope.suspend = function (user) {
+            user.enabled = false;
+
+            $http.put("/users/" + user.id, user).then(function (response) {
+                $scope.updateList();
+            }, function (error) {
+                alert(error.data.msg);
+            });
+        }
+
+        $scope.enable = function (user) {
+            user.enabled = true;
+
+            $http.put("/users/" + user.id, user).then(function (response) {
+                $scope.updateList();
+            }, function (error) {
+                alert(error.data.msg);
+            });
+        }
+
+        $scope.modal = {
+            open: function (mode, userId) {
+                var modalInstance = $uibModal.open({
+                    animation: true,
+                    component: 'user.Modal',
+                    ariaLabelledBy: 'modal-title',
+                    ariaDescribedBy: 'modal-body',
+                    size: 'sm',
+                    resolve: {
+                        mode: function () {
+                            return mode;
+                        },
+                        user: function () {
+                            if (!userId) return {};
+                            var diferred = $q.defer();
+                            $http.get("/users/" + userId).then(function (response) {
+                                diferred.resolve(response.data);
+                            }, function (error) {
+                                alert(error.data.msg);
+                                diferred.reject(error.data);
+                            });
+                            return diferred.promise;
+                        }
+                    }
+                });
+
+                modalInstance.result.then(function (data) {
+                    var user = JSON.parse(sessionStorage.user);
+                    var mode = data[0];
+                    var user = data[1];
+                    user.roles = [];
+                    switch ($scope.role) {
+                        case "admin":
+                            user.roles.push("admin");
+                        case "program_manager":
+                            user.roles.push("program_manager");
+                        case "volunteer":
+                            user.roles.push("volunteer");
+                    }
+                    var send = mode == "new" ? $http.post : $http.put;
+
+                    send("/users", program).then(function (response) {
+                        $scope.updateList();
+                    }, function (error) {
+                        alert(error.data.msg);
+                    });
+                }, function (dismissReason) {
+                    //Do nothing
+                });
             }
-        }
-
-        $scope.suspend = function (userid, index) {
-            var tmp = $scope.users[index];
-            tmp.enabled = false;
-
-            var request = {
-                method: "PUT",
-                url: "/users/update/" + userid,
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                data: tmp
-            };
-
-            $http(request).then(function (response) {
-                $scope.updateList();
-            })
-        }
-
-        $scope.enable = function (userid, index) {
-            var tmp = $scope.users[index];
-            tmp.enabled = true;
-
-            var request = {
-                method: "PUT",
-                url: "/users/update/" + userid,
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                data: tmp
-            };
-
-            $http(request).then(function (response) {
-                $scope.updateList();
-            })
         }
 
         $scope.remove = function (userId) {
             $http.delete("/users/" + userId).then(function (response) {
                 $http.get("/activities").then(function (response) {
-                    console.log(response);
                     response.data.forEach(function (activity) {
-                        console.log(activity);
                         activity.shifts.forEach(function (shift) {
                             var idx = shift.volunteers.indexOf(userId);
                             console.log(idx + ": " + shift.volunteers);
@@ -94,7 +117,7 @@
 
                                 $http(request);
                             }
-                        })                       
+                        })
                     })
                 });
 
@@ -104,41 +127,46 @@
             });
         }
 
-        //create users
-        $scope.createUser = function () {
-            $scope.showUser = !$scope.showUser;
+        //Opens modal to create user
+        $scope.create = function () {
+            $scope.modal.open("new");
         }
 
-        $scope.create = function () {
-            $scope.user.enabled = true;
-            $scope.user.roles = [];
-            switch ($scope.role) {
-                case "admin":
-                    $scope.user.roles.push("admin");
-                case "program_manager":
-                    $scope.user.roles.push("program_manager");
-                case "volunteer":
-                    $scope.user.roles.push("volunteer");
-            }
-            var request = {
-                method: "POST",
-                url: "/users",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                data: $scope.user
-            }
-            $http(request).then(function (response) {
-                $scope.message = "User successfully created";
-                $scope.clear();
-                $scope.updateList();
-            }, function (err) {
-                $scope.message = err;
-            });
+        $scope.edit = function (userId) {
+            $scope.modal.open("edit", userId);
         }
-        $scope.clear = function () {
-            $scope.user = {};
-            $scope.role = "";
-        }
+
+        $scope.updateList();
     }
-]);
+    ]).component("user.Modal", {
+        templateUrl: "userModal.html",
+        bindings: {
+            resolve: '<',
+            close: '&',
+            dismiss: '&'
+        },
+        controller: function () {
+            var $ctrl = this;
+
+            $ctrl.$onInit = function () {
+                switch ($ctrl.resolve.mode) {
+                    case "new":
+                        $ctrl.user = {};
+                        $ctrl.role = "volunteer";
+                        break;
+                    case "edit":
+                        $ctrl.user = $ctrl.resolve.user;
+                        $ctrl.role = $ctrl.roles[0];
+                        break;
+                }
+            }
+
+            $ctrl.accept = function () {
+                $ctrl.close({ $value: [$ctrl.resolve.mode, $ctrl.program, $ctrl.activities] });
+            }
+
+            $ctrl.cancel = function () {
+                $ctrl.dismiss({ $value: 'cancel' });
+            }
+        }
+    });

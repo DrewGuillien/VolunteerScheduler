@@ -30,7 +30,10 @@
     <script type="text/ng-template" id="programModal.html">
         <!-- Modal Header -->
         <div class="modal-header">
-            <h3 class="modal-title" id="modal-title">Add a Program</h3>
+            <h3 class="modal-title" id="modal-title">
+                <span ng-if="$ctrl.resolve.mode == 'new'">Add a Program</span>
+                <span ng-if="$ctrl.resolve.mode == 'edit'">Update a Program</span>
+            </h3>
         </div>
 
         <!-- Modal Body -->

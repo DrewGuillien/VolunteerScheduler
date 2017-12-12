@@ -51,17 +51,38 @@ router.get("/users", function (request, response) {
     });
 });
 
+router.get("/users/:userId", function (request, response) {
+    users.findById(request.params.userId, function (error, user) {
+        if (error) {
+            response.status(500, "Unable to get user");
+        } else {
+            response.status(200).send(user);
+        }
+    });
+})
+
 router.delete("/users/:userId", function (request, response) {
     users.remove(request.params.userId, function (error) {
         if (error) {
-            response.send(500, "Failed to remove user");
+            response.status(500, "Failed to remove user");
         } else {
-            response.send(200);
+            response.status(200).end();
         }
     });
 });
 
-router.put("/users/update/:userId", function (request, response) {
+router.put("/users", function (request, response) {
+    if (!request.body || !request.body.id) response.status(400, "No user to update");
+    users.update(request.body.id, request.body, function (error) {
+        if (error) {
+            response.status(500, "Error updating user");
+        } else {
+            response.status(200).end();
+        }
+    })
+});
+
+router.put("/users/:userId", function (request, response) {
     users.update(request.params.userId, request.body, function (error) {
         if (error) {
             response.status(500, "Error updating user");

@@ -36,7 +36,6 @@
                     component: 'program.Modal',
                     ariaLabelledBy: 'modal-title',
                     ariaDescribedBy: 'modal-body',
-                    templateUrl: 'volunteerModal.html',
                     size: 'sm',
                     resolve: {
                         mode: function () {
