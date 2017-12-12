@@ -3,6 +3,10 @@
     padding: 0;
 }
 
+.center {
+    margin: 0 auto
+}
+
 .activity {
     display: inline-block;
     border: 1px solid black;

@@ -85,6 +85,17 @@ router.post("/programs", function (request, response) {
     });
 });
 
+router.put("/programs", function (request, response) {
+    if (!request.body || !request.body.id) response.send(400, "No program to update");
+    programs.update(request.body.id, request.body, function (error, program) {
+        if (error) {
+            response.send(500, "Failed to update program");
+        } else {
+            response.json(program);
+        }
+    })
+})
+
 router.put("/programs/:programId", function (request, response) {
     programs.update(request.params.programId, request.body, function (error, program) {
         if (error) {
@@ -149,6 +160,17 @@ router.post("/programs/:programId/activities", function (request, response) {
     activities.save(activity, function (error) {
         if (error) {
             response.status(500, "Error creating activity");
+        } else {
+            response.status(200).end();
+        }
+    });
+});
+
+router.put("/programs/:programId/activities", function (request, response) {
+    if(!request.body || !request.body.id) response.status(400, "No activity to update")
+    activities.update(request.body.id, request.body, function (error) {
+        if (error) {
+            response.status(500, "Error updating activity");
         } else {
             response.status(200).end();
         }

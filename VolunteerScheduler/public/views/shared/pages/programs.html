@@ -1,42 +1,7 @@
 ﻿<div class="container" ng-controller="Volunteer.Programs.Controller as $ctrl">
-    <button ng-if="!form && hasRole('program_manager')" ng-click="createForm()" name="createProgramForm" class="btn btn-primary pull-right" >Add New Program</button>
-    <form ng-if="form" class="form col-6-offset-3">
-        <label>Title</label>
-        <input type="text" ng-model="program.title" class="form-control"/>
-        <label>Description</label>
-        <textarea ng-model="program.description" class="form-control"></textarea>
-        <label>Activities ({{activities.length}})</label>
-        <div ng-repeat="activity in activities" class="activity">
-            <button ng-click="activity.remove()" class="btn btn-danger glyphicon glyphicon-remove pull-right"></button>
-            <label>Title</label>
-            <input type="text" ng-model="activity.title" ng-require class="form-control"/>
-            <label>Description</label>
-            <textarea ng-model="activity.description" ng-require class="form-control"></textarea>
-            <label>Shifts ({{activity.shifts.length}})</label>
-            <div ng-repeat="shift in activity.shifts" class="shift">
-                <button ng-click="shift.remove()" class="btn btn-danger glyphicon glyphicon-remove pull-right"></button>
-                <label>Date</label>
-                <input type="date" ng-model="shift.date" ng-change="activity.changeDate()" ng-require class="form-control" />
-                <label>Start Time</label>
-                <input type="time" ng-model="shift.startTime" ngMax="{{shift.endTime}}" ngMin="{{activity.date}}" ng-require class="form-control"/>
-                <label>End Time</label>
-                <input type="time" ng-model="shift.endTime" ngMin="{{shift.startTime}}" ng-require class="form-control"/>
-                <label>Minimum Volunteers</label>
-                <input type="number" ng-model="shift.minVolunteers" ngMax="{{shift.maxVolunteers}}" ngMin="1" ng-require class="form-control"/>
-                <label>Maximum Volunteers</label>
-                <input type="number" ng-model="shift.maxVolunteers" ngMin="{{shift.minVolunteers}}" ng-require class="form-control"/>
-            </div>
-            <button ng-click="activity.addShift()" class="btn btn-primary">Add Shift</button>
-        </div>
-        <button ng-click="addActivity()" class="btn btn-primary">Add Activity</button>
-        <div class="btn-group pull-right">
-            <input ng-click="add()" type="submit" value="Add New Program" class="btn btn-primary center" ng-if="hasRole('program_manager')""/>
-            <button ng-click="cancel()" class="btn btn-danger">Cancel</button>
-            <span ng-if="hasError">{{error}}</span>
-        </div>
-    </form>
-
-    <table ng-if="!form" class="table table-striped">
+    <button ng-if="hasRole('program_manager')" ng-click="create()" class="btn btn-primary pull-right" >Add New Program</button>
+    
+    <table class="table table-striped">
         <thead class="thead-inverse">
             <tr>
                 <th>Title</th>
@@ -48,14 +13,72 @@
             <tr ng-repeat="program in programs">
                 <td>{{program.title}}</td>
                 <td>{{program.description}}</td>
-                <td><button ng-click="view(program.id)" class="btn btn-success">View</button>
-                <button ng-click="edit(program.id)" ng-if="hasRole('program_manager')" class="btn btn-default">Edit</button>
-                <button ng-click="remove(program.id)" ng-if="hasRole('program_manager')" class="btn btn-danger">Remove</button>
-                <button ng-click="finalize(program.id)" ng-if="hasRole('admin')" class="btn btn-info">Finalize</button></td>
+                <td>
+                    <button ng-click="view(program.id)" class="btn btn-success">View</button>
+                    <button ng-click="edit(program.id)" ng-if="hasRole('program_manager')" class="btn btn-default">Edit</button>
+                    <button ng-click="remove(program.id)" ng-if="hasRole('program_manager')" class="btn btn-danger">Remove</button>
+                    <button ng-click="finalize(program.id)" ng-if="hasRole('admin')" class="btn btn-info">Finalize</button>
+                </td>
             </tr>
             <tr ng-if="empty">
                 <td colspan="5">There are no programs</td>
             </tr>
         </tbody>
     </table>
+
+    <!-- Add Modal -->
+    <script type="text/ng-template" id="programModal.html">
+        <!-- Modal Header -->
+        <div class="modal-header">
+            <h3 class="modal-title" id="modal-title">Add a Program</h3>
+        </div>
+
+        <!-- Modal Body -->
+        <div class="modal-body" id="modal-body">
+            <!-- Program fields -->
+            <label>Title</label>
+            <input type="text" ng-model="$ctrl.program.title" class="form-control" />
+            <label>Description</label>
+            <textarea ng-model="$ctrl.program.description" class="form-control"></textarea>
+
+            <label>Activities ({{$ctrl.activities.length}})</label>
+            <br/>
+            <div ng-repeat="activity in $ctrl.activities" class="activity">
+                <h3>Activity {{$ctrl.activities.indexOf(activity) + 1}}</h3>
+                <!-- Activity Fields -->
+                <button ng-click="activity.remove()" class="btn btn-danger glyphicon glyphicon-remove pull-right"></button>
+                <label>Title</label>
+                <input type="text" ng-model="activity.title" ng-require class="form-control" />
+                <label>Description</label>
+                <textarea ng-model="activity.description" ng-require class="form-control"></textarea>
+
+                <label>Shifts ({{activity.shifts.length}})</label>
+                <br/>
+                <div ng-repeat="shift in activity.shifts" class="shift">
+                    <h4>Shift {{activity.shifts.indexOf(shift) + 1}}</h4>
+                    <!-- Shift Fields -->
+                    <button ng-click="shift.remove()" class="btn btn-danger glyphicon glyphicon-remove pull-right"></button>
+                    <label>Date</label>
+                    <input type="date" ng-model="shift.date" ng-change="shift.changeDate()" ng-require class="form-control" />
+                    <label>Start Time</label>
+                    <input type="time" ng-model="shift.startTime" ngMax="{{shift.endTime}}" ngMin="{{activity.date}}" ng-require class="form-control" />
+                    <label>End Time</label>
+                    <input type="time" ng-model="shift.endTime" ngMin="{{shift.startTime}}" ng-require class="form-control" />
+                    <label>Minimum Volunteers</label>
+                    <input type="number" ng-model="shift.minVolunteers" ngMax="{{shift.maxVolunteers}}" ngMin="1" ng-require class="form-control" />
+                    <label>Maximum Volunteers</label>
+                    <input type="number" ng-model="shift.maxVolunteers" ngMin="{{shift.minVolunteers}}" ng-require class="form-control" />
+                </div>
+                <button ng-click="activity.addShift()" class="btn btn-primary center">Add Shift</button>
+            </div>
+            <button ng-click="$ctrl.addActivity()" class="btn btn-primary center">Add Activity</button>
+        </div>
+
+        <!-- Modal Buttons -->
+        <div class="modal-footer" id="modal-footer">
+            <button class="btn btn-primary" type="button" ng-if="$ctrl.resolve.mode == 'new'" ng-click="$ctrl.accept()">Add New Program</button>
+            <button class="btn btn-primary" type="button" ng-if="$ctrl.resolve.mode == 'edit'" ng-click="$ctrl.accept()">Save Changes</button>
+            <button class="btn btn-danger" type="button" ng-click="$ctrl.cancel()">Cancel</button>
+        </div>
+    </script>
 </div>
