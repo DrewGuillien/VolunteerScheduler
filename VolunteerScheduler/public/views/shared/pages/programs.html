@@ -16,7 +16,7 @@
                 <td>
                     <button ng-click="view(program.id)" class="btn btn-success">View</button>
                     <button ng-click="edit(program.id)" ng-disabled="program.finalized" ng-if="hasRole('program_manager')" class="btn btn-default">Edit</button>
-                    <button ng-click="remove(program.id)" ng-disabled="program.finalized" ng-if="hasRole('program_manager')" class="btn btn-danger">Remove</button>
+                    <button ng-click="remove(program.id)" ng-if="hasRole('program_manager')" class="btn btn-danger">Remove</button>
                     <button ng-click="finalize(program.id)" ng-disabled="program.finalized" ng-if="hasRole('admin')" class="btn btn-info">Finalize</button>
                 </td>
             </tr>
