@@ -31,9 +31,8 @@ router.post("/logout", function (request, response) {
 });
 
 router.post("/users", function (request, response) {
-    users.save(request.body, function (err, user) {
-        if (err) {
-            console.log(err);
+    users.save(request.body, function (error, user) {
+        if (error) {
             response.status(500).end();
         } else {
             response.status(200).end();
@@ -41,10 +40,10 @@ router.post("/users", function (request, response) {
     });
 });
 
-router.get("/users/grabAll", function (request, response) {
+router.get("/users", function (request, response) {
     users.findAll(function (error, userList) {
         if (error) {
-            response.status(404, "Something went terribly wrong, good sir");
+            response.status(404, "Unable to get users");
         } else {
             response.send(200, userList);
         }
@@ -125,7 +124,7 @@ router.delete("/programs/:programId", function (request, response) {
 
 router.get("/programs/:programId/activities", function (request, response) {
     
-    activities.findAll(request.params.programId, function (error, activityList) {
+    activities.findByProgramId(request.params.programId, function (error, activityList) {
         if (error) {
             response.status(404, "No activities found");
         } else {
@@ -188,7 +187,7 @@ router.put("/programs/:programId/activities/:activityId/shifts/:shiftId/voluntee
                 }
                 return shift;
             });
-            activities.update(activity._id, activity, function (updateError) {
+            activities.update(activity._id, { $set: { shifts: activity.shifts } }, function (updateError) {
                 if (updateError) {
                     response.status(500).send("Unable to volunteer for this activity");
                 } else {
@@ -196,6 +195,28 @@ router.put("/programs/:programId/activities/:activityId/shifts/:shiftId/voluntee
                 }
             });
         }
+    });
+});
+
+router.post("/users/:userId/shifts/conflict", function (request, response) {
+    var shift1 = request.body;
+    // Returns true if shift2 conflicts with shift 1
+    var conflicts = function (shift2) {
+        var cond1 = shift1.endTime >= shift2.startTime && shift1.endTime <= shift2.endTime;
+        var cond2 = shift1.startTime <= shift2.startTime && shift1.endTime >= shift2.endTime;
+        var cond3 = shift1.startTime >= shift2.startTime && shift1.startTime <= shift2.endTime;
+        return cond1 || cond2 || cond3;
+    };
+    activities.findAll(function (error, activityList) {
+        // Concatonate all of the shifts in all activities for which the user has volunteered
+        var shifts = [];
+        activityList.forEach(function (activity) {
+            shifts.concat(activity.shifts.filter(function (s) {
+                return s.volunteers.contains(request.params.userId);
+            }));
+        });
+        // Returns true after first conflict is found
+        response.status(200).send(shifts.some(conflicts(s)));
     });
 });
 

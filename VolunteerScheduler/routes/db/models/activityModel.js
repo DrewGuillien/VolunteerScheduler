@@ -10,8 +10,8 @@ var activitySchema = Schema({
 
     shifts: [{
         date: Date,
-        startTime: String,
-        endTime: String,
+        startTime: Date,
+        endTime: Date,
         minPositions: Number,
         maxPositions: Number,
         volunteers: [{ type: Schema.Types.ObjectId, ref: "User" }]

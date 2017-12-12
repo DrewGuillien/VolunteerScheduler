@@ -20,3 +20,11 @@
 .halfWidth {
     width: 50%
 }
+
+.option {
+    color: red;
+}
+
+.selected {
+    color: purple !important;
+}

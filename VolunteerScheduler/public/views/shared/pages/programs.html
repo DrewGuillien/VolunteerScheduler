@@ -16,15 +16,15 @@
             <div ng-repeat="shift in activity.shifts" class="shift">
                 <button ng-click="shift.remove()" class="btn btn-danger glyphicon glyphicon-remove pull-right"></button>
                 <label>Date</label>
-                <input type="date" ng-model="activity.date" ng-require class="form-control" />
+                <input type="date" ng-model="shift.date" ng-change="activity.changeDate()" ng-require class="form-control" />
                 <label>Start Time</label>
-                <input type="time" ng-model="shift.startTime" ngMax="{{shift.endTime}}" ng-require class="form-control"/>
+                <input type="time" ng-model="shift.startTime" ngMax="{{shift.endTime}}" ngMin="{{activity.date}}" ng-require class="form-control"/>
                 <label>End Time</label>
                 <input type="time" ng-model="shift.endTime" ngMin="{{shift.startTime}}" ng-require class="form-control"/>
                 <label>Minimum Volunteers</label>
-                <input type="number" ng-model="shift.minVolunteers" ng-require class="form-control"/>
+                <input type="number" ng-model="shift.minVolunteers" ngMax="{{shift.maxVolunteers}}" ngMin="1" ng-require class="form-control"/>
                 <label>Maximum Volunteers</label>
-                <input type="number" ng-model="shift.maxVolunteers" ng-require class="form-control"/>
+                <input type="number" ng-model="shift.maxVolunteers" ngMin="{{shift.minVolunteers}}" ng-require class="form-control"/>
             </div>
             <button ng-click="activity.addShift()" class="btn btn-primary">Add Shift</button>
         </div>

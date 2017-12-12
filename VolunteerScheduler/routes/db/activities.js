@@ -12,12 +12,12 @@ function findById(programId, activityId, callback) {
 module.exports.findById = findById;
 
 function findByProgramId(programId, callback) {
-    Activity.find({ programId: programId }, callback);
+    Activity.find({ programId: new ObjectId(programId) }, callback);
 }
 module.exports.findByProgramId = findByProgramId;
 
-function findAll(programId, callback) {
-    Activity.find({programId: new ObjectId(programId)}, callback);
+function findAll(callback) {
+    Activity.find({}, callback);
 }
 module.exports.findAll = findAll;
 

@@ -20,6 +20,7 @@
 
         $scope.view = function (programId) {
             // route to '/programs/:programId'
+            // view activities for that program
             $location.path("/programs/" + programId);
         };
 
@@ -67,7 +68,7 @@
                         };
                         $http(request).then(function (response) {
                         }, function (error) {
-                            console.log(error);
+                            alert(error.data);
                         });
                     });
                     $scope.form = false;
@@ -79,14 +80,10 @@
 
         $scope.remove = function (programId) {
             if (programId) {
-                var request = {
-                    method: "DELETE",
-                    url: "/programs/" + programId
-                }
-                $http(request).then(function (response) {
+                $http.delete("/programs/" + programId).then(function (response) {
                     $scope.updateList();
                 }, function (error) {
-
+                    alert(error.data);
                 });
             }
         }
@@ -98,21 +95,11 @@
 
             //grab program
             if (programId) {
-                var request = {
-                    method: "GET",
-                    url: "/programs/" + programId
-                }
-
-                $http(request).then(function (response) {
+                $http.get("/programs/" + programId).then(function (response) {
                     programTitle = response.data.title;
 
-                    //grab users
-                    var request = {
-                        method: "GET",
-                        url: "/users/grabAll"
-                    }
-
-                    $http(request).then(function (response) {
+                    // Get all users
+                    $http.get("/users").then(function (response) {
                         users = response.data;
 
                         //construct email request
@@ -150,15 +137,15 @@
                             //send email for user
                             $http(request).then(function (data) {
                                 console.log(data);
-                            }, function (data) {
-                                console.log(data);
+                            }, function (error) {
+                                alert(error.data);
                             });
                         });
                     }, function (error) {
-                        console.log(error);
+                        alert(error.data);
                     });
                 }, function (error) {
-                    console.log(error);
+                    alert(error.data);
                 });
             }
         }
@@ -167,14 +154,14 @@
             $scope.activities.push({
                 title: "",
                 description: "",
-                date: new Date(),
                 shifts: [],
-                volunteers: [], // Will not be used when created
                 addShift: function () {
                     var activity = this;
+                    var currentDate = new Date();
                     activity.shifts.push({
-                        startTime: new Date(1970, 0, 1, 8, 0, 0),
-                        endTime: new Date(1970, 0, 1, 17, 0, 0),
+                        date: currentDate,
+                        startTime: new Date(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate(), 8, 0, 0),
+                        endTime: new Date(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate(), 17, 0, 0),
                         minVolunteers: 1,
                         maxVolunteers: 1,
                         remove: function () {
@@ -186,6 +173,24 @@
                 remove: function () {
                     var index = $scope.activities.indexOf(this);
                     if (index > -1) $scope.activities.splice(index, 1);
+                },
+                changeDate: function () {
+                    this.shifts.forEach(function (shift) {
+                        shift.startTime = new Date(
+                            shift.date.getFullYear(),
+                            shift.date.getMonth(),
+                            shift.date.getDate(),
+                            shift.startTime.getHours(),
+                            shift.startTime.getMinutes(),
+                            shift.startTime.getSeconds());
+                        shift.endTime = new Date(
+                            shift.date.getFullYear(),
+                            shift.date.getMonth(),
+                            shift.date.getDate(),
+                            shift.endTime.getHours(),
+                            shift.endTime.getMinutes(),
+                            shift.endTime.getSeconds());
+                    });
                 }
             });
             $scope.activities[$scope.activities.length - 1].addShift();

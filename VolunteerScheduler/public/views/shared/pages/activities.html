@@ -4,21 +4,24 @@
             <tr>
                 <th>Title</th>
                 <th>Description</th>
-                <th>Shifts</th>
-                <th>Volunteers</th>
-                <th ng-if="hasRole('volunteer')" colspan="2">Actions</th>
+                <!--<th>Shifts</th>
+                <th>Volunteers</th>-->
+                <th ng-if="hasRole('volunteer')">Actions</th>
             </tr>
         </thead>
         <tr ng-repeat="activity in activities">
             <td>{{activity.title}}</td>
             <td>{{activity.description}}</td>
-            <td><button ng-click="viewShifts(activity.id)" class="btn btn-default">View Shifts</button></td>
-            <td><button ng-click="viewVolunteers(activity.id)" class="btn btn-default">View Volunteers</button></td>
-            <td><button ng-if="hasRole('volunteer')" ng-click="volunteer(activity.id)"class="btn btn-success">Volunteer</button></td>
-            <td><button ng-if="hasRole('program_manager')" ng-click="remove(activity.id)" class="btn btn-danger">Remove</button></td>
+            <!--<td><button ng-click="viewShifts(activity.id)" class="btn btn-default">View Shifts</button></td>
+            <td><button ng-click="viewVolunteers(activity.id)" class="btn btn-default">View Volunteers</button></td>-->
+            <td>
+                <button ng-if="hasRole('volunteer')" ng-click="volunteer(activity.id)"class="btn btn-success">Volunteer</button>
+                <button ng-if="hasRole('program_manager')" ng-click="remove(activity.id)" class="btn btn-danger">Remove</button>
+            </td>
         </tr>
     </table>
 
+    <!-- Volunteer Modal -->
     <script type="text/ng-template" id="volunteerModal.html">
         <div class="modal-header">
             <h3 class="modal-title" id="modal-title">For which shift would you like to volunteer?</h3>
@@ -26,7 +29,13 @@
         <div class="modal-body" id="modal-body">
             <ul>
                 <li ng-repeat="shift in $ctrl.activity.shifts">
-                    <a href="#" ng-click="$event.preventDefault(); $ctrl.selected.shift = shift">{{$ctrl.display(shift)}}</a>
+                    <a href="#"
+                       class="option"
+                       ng-class="{selected: $ctrl.selected.shift == shift}"
+                       ng-click="$event.preventDefault(); $ctrl.selected.shift = shift">
+                        <!--ng-class="{disabled: disabled: $ctrl.conflict(shift)}"-->
+                        {{$ctrl.display(shift)}}
+                    </a>
                 </li>
             </ul>
         </div>

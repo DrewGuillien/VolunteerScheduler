@@ -19,19 +19,21 @@
 
         $scope.updateList();
 
-        $scope.viewShifts = function (activityId) {
-            //$scope.activities.filter(activity => activity.id == activityId).forEach(activity => view = "shifts");
-        }
-
-        $scope.viewVolunteers = function (activityId) {
-            //$scope.activities.filter(activity => activity.id == activityId).forEach(activity => view = "volunteers");
-        }
-
         $scope.volunteer = function (activityId) {
             $http.get("programs/" + $routeParams.programId + "/activities/" + activityId).then(function (response) {
                 $scope.modal.open(response.data);
             }, function (error) {
+                $scope.error.open(error.data);
+            });
+        }
 
+        $scope.conflict = function (shift) {
+            var user = JSON.parse(sessionStorage.user);
+            $http.post("/users/" + user.id + "/shifts/conflict", shift).then(function (response) {
+                return response.data;
+            }, function (error) {
+                alert(error.data);
+                return false;
             });
         }
 
@@ -68,7 +70,6 @@
 
                 modalInstance.result.then(function (shift) {
                     var user = JSON.parse(sessionStorage.user);
-                    console.log(user);
                     var request = {
                         method: "PUT",
                         url: "/programs/" + $routeParams.programId + "/activities/" + activity.id + "/shifts/" + shift._id + "/volunteers/" + user.id,
@@ -77,13 +78,41 @@
                     $http(request).then(function (response) {
 
                     }, function (error) {
-
+                        //console.log(error);
+                        $scope.error.open("Error", error.data);
                     });
                 }, function () {
 
                 });
             },
         }
+
+        $scope.error = {
+            open: function(title, error){
+                var modalInstance = $uibModal.open({
+                    animation: true,
+                    component: 'volunteer.Error.Modal',
+                    ariaLabelledBy: 'modal-title',
+                    ariaDescribedBy: 'modal-body',
+                    templateUrl: 'errorModal.html',
+                    size: 'sm',
+                    resolve: {
+                        title: function () {
+                            return title;
+                        },
+                        error: function () {
+                            return error;
+                        }
+                    }
+                });
+
+                modalInstance.result.then(function (response) {
+                    // The only response is Ok and all it will do is close the modal
+                }, function () {
+                    // No else clause
+                });
+            }
+        };
 
     }]).component('volunteer.Modal', {
         templateUrl: 'volunteerModal.html',
@@ -126,4 +155,12 @@
                 $ctrl.dismiss({ $value: 'cancel' });
             }
         }
+    }).component('volunteer.Error.Modal', {
+        templateUrl: 'errorModal.html',
+        bindings: {
+            resolve: '<',
+            close: '&',
+            dismiss: '&'
+        },
+        controller: 'volunteer.Error.Modal.Controller'
     });
