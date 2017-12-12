@@ -123,51 +123,49 @@
                 $http.get("/programs/" + programId).then(function (response) {
                     prog = response.data;
                     programTitle = prog.title;
+                    
+                    //Get all users
+                    $http.get("/users").then(function (response) {
+                        users = response.data;
 
-                    // Get all users
-                    //$http.get("/users").then(function (response) {
-                    //    users = response.data;
+                        //construct email request
+                        var mailgunUrl = "https://api.mailgun.net/v3/sandbox0838e66b15a44816bf0b60b2b6e45540.mailgun.org/messages";
+                        var mailgunApiKey = window.btoa("api:key-cff8699ab25561873e31651695db3879")
 
-                    //    //construct email request
-                    //    var mailgunUrl = "https://api.mailgun.net/v3/sandbox0838e66b15a44816bf0b60b2b6e45540.mailgun.org/messages";
-                    //    var mailgunApiKey = window.btoa("api:key-57d186b66a182eb3e319ff702e045c44")
+                        var request = {
+                            method: 'POST',
+                            url: mailgunUrl,
+                            headers: {
+                                'Access-Control-Allow-Origin': '*',
+                                'content-type': 'application/x-www-form-urlencoded',
+                                'Authorization': 'Basic ' + mailgunApiKey
+                            },
+                            transformRequest: function (obj) {
+                                var str = [];
+                                for (var p in obj)
+                                    str.push(encodeURIComponent(p) + "=" + encodeURIComponent(obj[p]));
+                                return str.join("&");
+                            },
+                            data: null
+                        };
 
-                    //    var request = {
-                    //        method: 'POST',
-                    //        url: mailgunUrl,
-                    //        headers: {
-                    //            'Access-Control-Allow-Origin': '*',
-                    //            'content-type': 'application/x-www-form-urlencoded',
-                    //            'Authorization': 'Basic ' + mailgunApiKey
-                    //        },
-                    //        transformRequest: function (obj) {
-                    //            var str = [];
-                    //            for (var p in obj)
-                    //                str.push(encodeURIComponent(p) + "=" + encodeURIComponent(obj[p]));
-                    //            return str.join("&");
-                    //        },
-                    //        data: null
-                    //    };
+                        //how am I spamming myself?!?!?!? :rage:
+                        users.forEach(function (user) {
+                            var dataJSON = {
+                                from: "postmaster@sandbox0838e66b15a44816bf0b60b2b6e45540.mailgun.org",
+                                to: user.email,
+                                subject: programTitle + " Schedule Finalized",
+                                text: "The schedule for program '" + programTitle + "' is now finalized. Please log in to verify your volunteer hours.",
+                                multipart: true
+                            };
+                            request.data = dataJSON;
 
-                    //    //how am I spamming myself?!?!?!? :rage:
-                    //    users.forEach(function (user) {
-                    //        var dataJSON = {
-                    //            from: "postmaster@sandbox0838e66b15a44816bf0b60b2b6e45540.mailgun.org",
-                    //            to: user.email,
-                    //            subject: programTitle + " Schedule Finalized",
-                    //            text: "The schedule for program '" + programTitle + "' is now finalized. Please log in to verify your volunteer hours.",
-                    //            multipart: true
-                    //        };
-                    //        request.data = dataJSON;
-
-                    //        //send email for user
-                    //        $http(request).then(function (data) {
-                    //            console.log(data);
-                    //        }, function (error) {
-                    //            alert(error.data);
-                    //            });
-
-                    //TODO: update program
+                            //send email for user
+                            $http(request).then(function (data) {
+                                console.log(data);
+                            }, function (error) {
+                                alert(error.data);
+                                });
 
                     prog.finalized = true;
                     var req = {
@@ -185,10 +183,10 @@
                         alert(error.data);
                     });
 
-                    //    });
-                    //}, function (error) {
-                    //    alert(error.data);
-                    //});
+                        });
+                    }, function (error) {
+                        alert(error.data);
+                    });
                 }, function (error) {
                     alert(error.data);
                 });

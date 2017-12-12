@@ -40,6 +40,7 @@
     <Compile Include="public\controllers\navigation.js">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="public\controllers\help.js" />
     <Compile Include="public\controllers\reports.js">
       <SubType>Code</SubType>
     </Compile>
@@ -76,6 +77,7 @@
       <SubType>Code</SubType>
     </Compile>
     <Content Include="package.json" />
+    <Content Include="public\views\shared\pages\help.html" />
     <Content Include="public\views\shared\pages\reports.html">
       <SubType>Code</SubType>
     </Content>

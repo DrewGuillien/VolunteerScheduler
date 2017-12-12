@@ -34,6 +34,10 @@
                 templateUrl: "/views/shared/pages/reports.html",
                 controller: "Volunteer.Reports.Controller"
             })
+            .when("/help", {
+                templateUrl: "/views/shared/pages/help.html",
+                controller: "Volunteer.Help.Controller"
+            })
             .otherwise({
                 templateUrl: "/views/shared/login/login.html",
                 controller: "Volunteer.Login.Controller"
