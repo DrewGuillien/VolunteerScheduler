@@ -1,11 +1,9 @@
 ﻿angular.module("Volunteer.App")
-    .controller("Volunteer.Programs.Controller", ["$scope", "$http", "$location", "$routeParams", "Session", function ($scope, $http, $location, $routeParams, Session) {
-        $scope.form = false;
-        $scope.program = {};
-        $scope.activities = [];
-
+    .controller("Volunteer.Programs.Controller", ["$scope", "$http", "$q", "$location", "$routeParams", "$uibModal", "Session", function ($scope, $http, $q, $location, $routeParams, $uibModal, Session) {
+        // Grabs hasRole function from Session service
         $scope.hasRole = Session.hasRole;
 
+        // Refreshes the list of programs
         $scope.updateList = function () {
             $http.get("/programs").then(function (response) {
                 $scope.empty = false;
@@ -18,66 +16,91 @@
             });
         }
 
+        $scope.create = function () {
+            $scope.modal.open("new");
+        }
+
+        $scope.edit = function (programId) {
+            $scope.modal.open("edit", programId);
+        }
+        
+        // View activities for that program
         $scope.view = function (programId) {
-            // route to '/programs/:programId'
-            // view activities for that program
             $location.path("/programs/" + programId);
         };
 
-        $scope.createForm = function () {
-            $scope.form = true;
-        };
+        $scope.modal = {
+            open: function (mode, programId) {
+                var modalInstance = $uibModal.open({
+                    animation: true,
+                    component: 'program.Modal',
+                    ariaLabelledBy: 'modal-title',
+                    ariaDescribedBy: 'modal-body',
+                    templateUrl: 'volunteerModal.html',
+                    size: 'sm',
+                    resolve: {
+                        mode: function () {
+                            return mode;
+                        },
+                        program: function () {
+                            if (!programId) return {};
+                            var diferred = $q.defer();
+                            $http.get("/programs/" + programId).then(function (response) {
+                                diferred.resolve(response.data);
+                            }, function (error) {
+                                alert(error.data);
+                                diferred.reject(error.data);
+                            });
+                            return diferred.promise;
+                        },
+                        activities: function () {
+                            if (!programId) return [];
+                            var diferred = $q.defer();
+                            $http.get("/programs/" + programId + "/activities").then(function (response) {
+                                var activities = response.data;
+                                // JSON turns dates to strings and must be converted back
+                                activities.forEach(function (activity) {
+                                    activity.shifts.forEach(function (shift) {
+                                        shift.date = new Date(shift.date);
+                                        shift.startTime = new Date(shift.startTime);
+                                        shift.endTime = new Date(shift.endTime);
+                                    });
+                                });
+                                diferred.resolve(activities);
+                            }, function (error) {
+                                alert(error.data);
+                                diferred.reject(error.data);
+                            });
+                            return diferred.promise;
+                        }
+                    }
+                });
 
-        $scope.cancel = function () {
-            $scope.program.title = "";
-            $scope.program.description = "";
-            $scope.activities = [];
-            $scope.form = false;
-        }
+                modalInstance.result.then(function (data) {
+                    var user = JSON.parse(sessionStorage.user);
+                    var mode = data[0];
+                    var program = data[1];
+                    var activities = data[2];
+                    var send = mode == "new" ? $http.post : $http.put;
 
-        $scope.add = function () {
-            $scope.error = "";
-            if (!$scope.program.title) {
-                $scope.hasError = true;
-                $scope.error = "Title is required\n";
-            }
-            if (!$scope.program.description) {
-                $scope.hasError = true;
-                $scope.error += "Description is required";
-            }
-            $scope.program.finalized = false;
-            var request = {
-                method: "POST",
-                url: "/programs",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                data: $scope.program
-            };
-
-            if (!$scope.hasError) {
-                $http(request).then(function (response) {
-                    $scope.updateList();
-                    $scope.activities.forEach(function (activity) {
-                        request = {
-                            method: "POST",
-                            url: "/programs/" + response.data.id + "/activities",
-                            headers: {
-                                "Content-Type": "application/json"
-                            },
-                            data: activity
-                        };
-                        $http(request).then(function (response) {
-                        }, function (error) {
-                            alert(error.data);
+                    send("/programs", program).then(function (response) {
+                        activities.forEach(function (activity) {
+                            send = activity.id ? $http.put : $http.post;
+                            send("/programs/" + response.data.id + "/activities", activity).then(function (response) {
+                                // Do nothing
+                            }, function (error) {
+                                alert(error.data.msg);
+                            });
                         });
+                        $scope.updateList();
+                    }, function (error) {
+                        alert(error.data.msg);
                     });
-                    $scope.form = false;
-                }, function (error) {
-                    console.log(error)
+                }, function (dismissReason) {
+                    //Do nothing
                 });
             }
-        };
+        }
 
         $scope.remove = function (programId) {
             if (programId) {
@@ -144,23 +167,23 @@
                     //            alert(error.data);
                     //            });
 
-                            //TODO: update program
+                    //TODO: update program
 
                     prog.finalized = true;
-                            var req = {
-                                method: "PUT",
-                                url: "/programs/" + programId,
-                                headers: {
-                                    "Content-Type": "application/json"
-                                },
-                                data: prog
-                            };
+                    var req = {
+                        method: "PUT",
+                        url: "/programs/" + programId,
+                        headers: {
+                            "Content-Type": "application/json"
+                        },
+                        data: prog
+                    };
 
-                            $http(req).then(function (data) {
-                                $scope.updateList();
-                            }, function (error) {
-                                alert(error.data);
-                            });
+                    $http(req).then(function (data) {
+                        $scope.updateList();
+                    }, function (error) {
+                        alert(error.data);
+                    });
 
                     //    });
                     //}, function (error) {
@@ -172,52 +195,85 @@
             }
         }
 
-        $scope.addActivity = function () {
-            $scope.activities.push({
-                title: "",
-                description: "",
-                shifts: [],
-                addShift: function () {
-                    var activity = this;
-                    var currentDate = new Date();
-                    activity.shifts.push({
-                        date: currentDate,
-                        startTime: new Date(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate(), 8, 0, 0),
-                        endTime: new Date(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate(), 17, 0, 0),
-                        minVolunteers: 1,
-                        maxVolunteers: 1,
-                        remove: function () {
-                            var index = activity.shifts.indexOf(this);
-                            if (index > -1) activity.shifts.splice(index, 1);
-                        }
-                    });
-                },
-                remove: function () {
-                    var index = $scope.activities.indexOf(this);
-                    if (index > -1) $scope.activities.splice(index, 1);
-                },
-                changeDate: function () {
-                    this.shifts.forEach(function (shift) {
-                        shift.startTime = new Date(
-                            shift.date.getFullYear(),
-                            shift.date.getMonth(),
-                            shift.date.getDate(),
-                            shift.startTime.getHours(),
-                            shift.startTime.getMinutes(),
-                            shift.startTime.getSeconds());
-                        shift.endTime = new Date(
-                            shift.date.getFullYear(),
-                            shift.date.getMonth(),
-                            shift.date.getDate(),
-                            shift.endTime.getHours(),
-                            shift.endTime.getMinutes(),
-                            shift.endTime.getSeconds());
-                    });
-                }
-            });
-            $scope.activities[$scope.activities.length - 1].addShift();
-        }
-
         $scope.updateList();
-    }
-]);
+    }])
+    // Modal component
+    .component('program.Modal', {
+        templateUrl: 'programModal.html',
+        bindings: {
+            resolve: '<',
+            close: '&',
+            dismiss: '&'
+        },
+        controller: function () {
+            var $ctrl = this;
+
+            $ctrl.$onInit = function () {
+                switch ($ctrl.resolve.mode) {
+                    case "new":
+                        $ctrl.program = {};
+                        $ctrl.program.finalized = false;
+                        $ctrl.activities = [];
+                        break;
+                    case "edit":
+                        $ctrl.program = $ctrl.resolve.program;
+                        $ctrl.activities = $ctrl.resolve.activities;
+                        break;
+                }
+            }
+
+            $ctrl.addActivity = function() {
+                $ctrl.activities.push({
+                    title: "",
+                    description: "",
+                    shifts: [],
+                    addShift: function () {
+                        var activity = this;
+                        var currentDate = new Date();
+                        activity.shifts.push({
+                            date: currentDate,
+                            startTime: new Date(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate(), 8, 0, 0),
+                            endTime: new Date(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate(), 17, 0, 0),
+                            minVolunteers: 1,
+                            maxVolunteers: 1,
+                            remove: function () {
+                                var index = activity.shifts.indexOf(this);
+                                if (index > -1) activity.shifts.splice(index, 1);
+                            },
+                            // startTime and endTime are stored as dates and will reflect the
+                            // correct date by changing their values when the date field is changed
+                            changeDate: function () {
+                                this.startTime = new Date(
+                                    this.date.getFullYear(),
+                                    this.date.getMonth(),
+                                    this.date.getDate(),
+                                    this.startTime.getHours(),
+                                    this.startTime.getMinutes(),
+                                    this.startTime.getSeconds());
+                                this.endTime = new Date(
+                                    this.date.getFullYear(),
+                                    this.date.getMonth(),
+                                    this.date.getDate(),
+                                    this.endTime.getHours(),
+                                    this.endTime.getMinutes(),
+                                    this.endTime.getSeconds());
+                            }
+                        });
+                    },
+                    remove: function () {
+                        var index = $scope.activities.indexOf(this);
+                        if (index > -1) $scope.activities.splice(index, 1);
+                    }
+                });
+                $ctrl.activities[$ctrl.activities.length - 1].addShift();
+            }
+
+            $ctrl.accept = function () {
+                $ctrl.close({ $value: [$ctrl.resolve.mode, $ctrl.program, $ctrl.activities] });
+            }
+
+            $ctrl.cancel = function () {
+                $ctrl.dismiss({ $value: 'cancel' });
+            }
+        }
+    });
