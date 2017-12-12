@@ -30,6 +30,7 @@ router.post("/logout", function (request, response) {
     delete request.session;
 });
 
+//users
 router.post("/users", function (request, response) {
     users.save(request.body, function (error, user) {
         if (error) {
@@ -46,6 +47,28 @@ router.get("/users", function (request, response) {
             response.status(404, "Unable to get users");
         } else {
             response.send(200, userList);
+        }
+    });
+});
+
+router.delete("/users/:userId", function (request, response) {
+    users.remove(request.params.userId, function (error) {
+        if (error) {
+            response.send(500, "Failed to remove user");
+        } else {
+            response.send(200);
+        }
+    });
+});
+
+router.put("/users/update/:userId", function (request, response) {
+    //TODO: remove from activities
+
+    users.update(request.params.userId, request.body, function (error) {
+        if (error) {
+            response.status(500, "Error updating user");
+        } else {
+            response.status(200).end();
         }
     });
 });

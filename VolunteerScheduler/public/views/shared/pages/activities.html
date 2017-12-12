@@ -15,8 +15,8 @@
             <!--<td><button ng-click="viewShifts(activity.id)" class="btn btn-default">View Shifts</button></td>
             <td><button ng-click="viewVolunteers(activity.id)" class="btn btn-default">View Volunteers</button></td>-->
             <td>
-                <button ng-if="hasRole('volunteer')" ng-click="volunteer(activity.id)"class="btn btn-success">Volunteer</button>
-                <button ng-if="hasRole('program_manager')" ng-click="remove(activity.id)" class="btn btn-danger">Remove</button>
+                <button ng-if="hasRole('volunteer')" ng-disabled="isFinalized()" ng-click="volunteer(activity.id)"class="btn btn-success">Volunteer</button>
+                <button ng-if="hasRole('program_manager')" ng-disabled="isFinalized()" ng-click="remove(activity.id)" class="btn btn-danger">Remove</button>
             </td>
         </tr>
     </table>

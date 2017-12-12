@@ -3,7 +3,7 @@
         $scope.hasRole = Session.hasRole;
         $scope.shifts = [];
         $scope.volunteers = [];
-
+        $scope.program;
 
         $scope.updateList = function () {
             $http.get("/programs/" + $routeParams.programId + "/activities").then(function (response) {
@@ -12,12 +12,21 @@
                 if ($scope.activities.length == 0) {
                     $scope.empty = true;
                 }
+
+                $http.get("/programs/" + $routeParams.programId).then(function (response) {
+                    $scope.program = response.data;
+                });
+
             }, function (response) {
                 $scope.empty = true;
             });
         }
 
         $scope.updateList();
+
+        $scope.isFinalized = function () {
+            return $scope.program.finalized;
+        }
 
         $scope.volunteer = function (activityId) {
             $http.get("programs/" + $routeParams.programId + "/activities/" + activityId).then(function (response) {

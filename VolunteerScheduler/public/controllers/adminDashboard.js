@@ -1,6 +1,88 @@
 ﻿angular.module("Volunteer.App")
-    .controller("Volunteer.Admin.Dashboard.Controller", ["$scope", "$http", "$location", function ($scope, $http, $location) {
+    .controller("Volunteer.Admin.Dashboard.Controller", ["$scope", "$http", "$location", "Session", function ($scope, $http, $location) {
         $scope.message = "";
+        $scope.showUser = false;
+        $scope.showTable = false;
+        $scope.users;
+
+        $scope.updateList = function () {
+            $http.get("/users").then(function (response) {
+                $scope.users = response.data;
+                console.log($scope.users);
+            });
+        }
+
+        //manage users
+        $scope.searchUsers = function () {
+            $scope.updateList();
+            $scope.showTable = !$scope.showTable;
+        }
+
+        $scope.shouldShow = function (username, enabled) {
+            if (enabled === true && username != "Admin") {
+                return true;
+            } else {
+                return false;
+            }
+        }
+
+        $scope.isAdmin = function (username) {
+            if (username === "Admin") {
+                return false;
+            } else {
+                return true;
+            }
+        }
+
+        $scope.suspend = function (userid, index) {
+            var tmp = $scope.users[index];
+            tmp.enabled = false;
+
+            var request = {
+                method: "PUT",
+                url: "/users/update/" + userid,
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                data: tmp
+            };
+
+            $http(request).then(function (response) {
+                $scope.updateList();
+            })
+        }
+
+        $scope.enable = function (userid, index) {
+            var tmp = $scope.users[index];
+            tmp.enabled = true;
+
+            var request = {
+                method: "PUT",
+                url: "/users/update/" + userid,
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                data: tmp
+            };
+
+            $http(request).then(function (response) {
+                $scope.updateList();
+            })
+        }
+
+        $scope.remove = function (userid) {
+            $http.delete("/users/" + userid).then(function (response) {
+                $scope.updateList();
+            }, function (error) {
+                alert(error.data);
+            });
+        }
+
+        //create users
+        $scope.createUser = function () {
+            $scope.showUser = !$scope.showUser;
+        }
+
         $scope.create = function () {
             $scope.user.enabled = true;
             $scope.user.roles = [];
@@ -23,6 +105,7 @@
             $http(request).then(function (response) {
                 $scope.message = "User successfully created";
                 $scope.clear();
+                $scope.updateList();
             }, function (err) {
                 $scope.message = err;
             });

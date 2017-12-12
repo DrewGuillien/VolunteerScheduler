@@ -1,5 +1,9 @@
 ﻿<div ng-controller="Volunteer.Admin.Dashboard.Controller as $ctrl">
-    <form class="form">
+
+    <button ng-click="createUser()">
+        Create User
+    </button>
+    <form class="form" ng-show="showUser">
         <p>Create a new user</p>
         <div>
             <span class="col-md-6">
@@ -26,21 +30,54 @@
         </div>
         <div>
             <label>Email: </label>
-            <input ng-model="user.email" type="email" class="form-control"/>
+            <input ng-model="user.email" type="email" class="form-control" />
         </div>
         <div>
             <label>Roles</label>
             <div class="radio">
-                <label><input ng-model="role" value="admin" type="radio"/>Admin</label>
+                <label><input ng-model="role" value="admin" type="radio" />Admin</label>
             </div>
             <div class="radio">
-                <label><input ng-model="role" value="program_manager" type="radio"/>Program Manager</label>
+                <label><input ng-model="role" value="program_manager" type="radio" />Program Manager</label>
             </div>
             <div class="radio">
-                <label><input ng-model="role" value="volunteer" type="radio"/>Volunteer</label>
+                <label><input ng-model="role" value="volunteer" type="radio" />Volunteer</label>
             </div>
-            
+
         </div>
         <button ng-click="create()" class="btn btn-primary">Create</button>
     </form>
+
+    <button ng-click="searchUsers()">
+        Manage Users
+    </button>
+
+    <table class="table table-striped" ng-show="showTable">
+        <thead id="TblHead">
+            <tr>
+                <td>Username</td>
+                <td>First Name</td>
+                <td>Last Name</td>
+                <td>Email</td>
+                <td>Role</td>
+                <td>Active</td>
+                <td></td>
+            </tr>
+        </thead>
+        <tbody>
+            <tr ng-repeat="user in users">
+                <td> {{user.username}}</td>
+                <td>{{user.name.first}}</td>
+                <td>{{user.name.last}}</td>
+                <td>{{user.email}}</td>
+                <td>{{user.roles[0]}}</td>
+                <td>{{user.enabled}}</td>
+                <td>
+                    <button ng-click="suspend(user.id, $index)" ng-if="isAdmin(user.username)" ng-show="shouldShow(user.username, user.enabled)" class="btn btn-warning">Suspend</button>
+                    <button ng-click="enable(user.id, $index)" ng-if="isAdmin(user.username)" ng-show="!shouldShow(user.username, user.enabled)" class="btn btn-success">Enable</button>
+                    <button ng-click="remove(user.id)" ng-if="isAdmin(user.username)" class="btn btn-danger">Delete</button>
+                </td>
+            </tr>
+        </tbody>
+    </table>
 </div>

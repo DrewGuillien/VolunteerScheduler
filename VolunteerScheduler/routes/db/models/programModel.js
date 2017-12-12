@@ -5,6 +5,7 @@ var programSchema = Schema({
     id: String,
     title: String,
     description: String,
+    finalized: Boolean
 });
 
 programSchema.set("toJSON", {
