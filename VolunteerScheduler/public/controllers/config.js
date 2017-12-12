@@ -30,6 +30,10 @@
                 templateUrl: "/views/admin/adminDashboard.html",
                 controller: "Volunteer.Admin.Dashboard.Controller"
             })
+            .when("/reports", {
+                templateUrl: "/views/shared/pages/reports.html",
+                controller: "Volunteer.Reports.Controller"
+            })
             .otherwise({
                 templateUrl: "/views/shared/login/login.html",
                 controller: "Volunteer.Login.Controller"

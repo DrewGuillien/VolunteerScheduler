@@ -40,6 +40,9 @@
     <Compile Include="public\controllers\navigation.js">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="public\controllers\reports.js">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="public\services\Session.js">
       <SubType>Code</SubType>
     </Compile>
@@ -73,6 +76,9 @@
       <SubType>Code</SubType>
     </Compile>
     <Content Include="package.json" />
+    <Content Include="public\views\shared\pages\reports.html">
+      <SubType>Code</SubType>
+    </Content>
     <Content Include="README.md" />
     <Content Include="typings.json" />
     <Content Include="public\views\admin\adminDashboard.html">

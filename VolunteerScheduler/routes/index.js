@@ -62,11 +62,29 @@ router.delete("/users/:userId", function (request, response) {
 });
 
 router.put("/users/update/:userId", function (request, response) {
-    //TODO: remove from activities
-
     users.update(request.params.userId, request.body, function (error) {
         if (error) {
             response.status(500, "Error updating user");
+        } else {
+            response.status(200).end();
+        }
+    });
+});
+
+router.get("/activities", function (request, response) {
+    activities.findAll(function (error, activityList) {
+        if (error) {
+            response.status(404, "Unable to get activities");
+        } else {
+            response.send(200, activityList);
+        }
+    });
+});
+
+router.put("/activities/:activityId", function (request, response) {
+    activities.update(request.params.activityId, request.body, function (error) {
+        if (error) {
+            response.status(500, "Error updating activity");
         } else {
             response.status(200).end();
         }

@@ -1,5 +1,5 @@
 ﻿angular.module("Volunteer.App")
-    .controller("Volunteer.Admin.Dashboard.Controller", ["$scope", "$http", "$location", "Session", function ($scope, $http, $location) {
+    .controller("Volunteer.Admin.Dashboard.Controller", ["$scope", "$http", "$location", function ($scope, $http, $location) {
         $scope.message = "";
         $scope.showUser = false;
         $scope.showTable = false;
@@ -70,8 +70,34 @@
             })
         }
 
-        $scope.remove = function (userid) {
-            $http.delete("/users/" + userid).then(function (response) {
+        $scope.remove = function (userId) {
+            $http.delete("/users/" + userId).then(function (response) {
+                $http.get("/activities").then(function (response) {
+                    console.log(response);
+                    response.data.forEach(function (activity) {
+                        console.log(activity);
+                        activity.shifts.forEach(function (shift) {
+                            var idx = shift.volunteers.indexOf(userId);
+                            console.log(idx + ": " + shift.volunteers);
+
+                            if (idx > -1) {
+                                shift.volunteers.splice(idx, 1);
+
+                                var request = {
+                                    method: "PUT",
+                                    url: "/activities/" + activity.id,
+                                    headers: {
+                                        "Content-Type": "application/json"
+                                    },
+                                    data: activity
+                                };
+
+                                $http(request);
+                            }
+                        })                       
+                    })
+                });
+
                 $scope.updateList();
             }, function (error) {
                 alert(error.data);

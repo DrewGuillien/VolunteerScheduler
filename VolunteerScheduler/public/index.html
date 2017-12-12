@@ -48,6 +48,11 @@
                 <li ng-if="hasRole('programManager') || hasRole('volunteer')">
                     <a href="#/programs">Programs</a>
                 </li>
+
+                <!-- Reports -->
+                <li ng-if="hasRole('programManager') || hasRole('volunteer')">
+                    <a href="#/reports">Reports</a>
+                </li>
             </ul>
             <!-- User options in right side of navbar -->
             <ul class="nav navbar-nav navbar-right">
