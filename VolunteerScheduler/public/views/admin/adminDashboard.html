@@ -26,13 +26,52 @@
                 <td>{{user.enabled}}</td>
                 <td>
                     <button ng-click="edit(user.id)" class="btn btn-default">Edit</button>
-                    <button ng-click="suspend(user)" ng-if="!isAdmin(user.username)" ng-show="!shouldShow(user.username, user.enabled)" class="btn btn-warning">Suspend</button>
-                    <button ng-click="enable(user)" ng-if="!isAdmin(user.username)" ng-show="shouldShow(user.username, user.enabled)" class="btn btn-success">Enable</button>
+                    <button ng-click="suspend(user)" ng-if="!isAdmin(user.username)" ng-show="shouldShow(user.username, user.enabled)" class="btn btn-warning">Suspend</button>
+                    <button ng-click="enable(user)" ng-if="!isAdmin(user.username)" ng-show="!shouldShow(user.username, user.enabled)" class="btn btn-success">Enable</button>
                     <button ng-click="remove(user.id)" ng-if="!isAdmin(user.username)" class="btn btn-danger">Delete</button>
                 </td>
             </tr>
         </tbody>
     </table>
+    <div ng-show="isActVis">
+        <form>
+            <div class="input-group">
+
+            </div>
+            <input class="form-control inline" type="text" ng-model="te" />
+            <button class="btn btn-primary glyphicon glyphicon-search" ng-click="searchTable(te)"></button>
+        </form>
+        <table class="table table-striped">
+            <thead id="TblHead">
+                <tr>
+                    <td>Program</td>
+                    <td>Activity</td>
+                    <td>Shift</td>
+                    <td>Volunteer</td>
+                </tr>
+            </thead>
+            <tbody>
+                <tr ng-repeat="activity in activities">
+                    <td> {{activity.program}}</td>
+                    <td>{{activity.title}}</td>
+                    <td>
+                        <table>
+                            <tr ng-repeat="shift in activity.shifts">
+                                <td>{{shift.startTime | date:'yyyy-MM-dd HH:mm'}} - {{shift.endTime | date:'HH:mm'}}</td>
+                            </tr>
+                        </table>
+                    </td>
+                    <td>
+                        <table>
+                            <tr ng-repeat="shift in activity.shifts">
+                                <td>{{shift.usernames}}</td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
 
     <script type="text/ng-template" id="userModal.html">
         <!-- Modal Header -->

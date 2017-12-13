@@ -222,9 +222,6 @@
 
         }
 
-    }
-    ]);
-
         $scope.updateList();
     }
     ]).component("user.Modal", {

@@ -33,8 +33,7 @@
                        class="option"
                        ng-class="{selected: $ctrl.selected.shift == shift}"
                        ng-click="$event.preventDefault(); $ctrl.selected.shift = shift">
-                        <!--ng-class="{disabled: disabled: $ctrl.conflict(shift)}"-->
-                        {{$ctrl.display(shift)}}
+                       {{$ctrl.display(shift)}}
                     </a>
                 </li>
             </ul>

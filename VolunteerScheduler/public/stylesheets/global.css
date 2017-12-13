@@ -32,3 +32,8 @@
 .selected {
     color: purple !important;
 }
+
+.inline {
+    display: inline;
+    width: 95%
+}

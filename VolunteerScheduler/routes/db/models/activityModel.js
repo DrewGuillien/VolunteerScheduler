@@ -12,8 +12,8 @@ var activitySchema = Schema({
         date: Date,
         startTime: Date,
         endTime: Date,
-        minPositions: Number,
-        maxPositions: Number,
+        minVolunteers: Number,
+        maxVolunteers: Number,
         volunteers: [{ type: Schema.Types.ObjectId, ref: "User" }]
     }]
 });

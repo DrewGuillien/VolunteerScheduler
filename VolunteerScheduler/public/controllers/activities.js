@@ -141,9 +141,15 @@
             }
 
             $ctrl.display = function (shift) {
-                var start = new Date(shift.startTime);
-                var end = new Date(shift.endTime);
-                return $ctrl.getTime(start) + " - " + $ctrl.getTime(end);
+                var total = shift.volunteers.length;
+                var date = new Date(shift.date);
+                var month = date.getMonth();
+                var day = date.getDate();
+                var year = date.getFullYear();
+                var max = shift.maxVolunteers;
+                var start = $ctrl.getTime(new Date(shift.startTime));
+                var end = $ctrl.getTime(new Date(shift.endTime));
+                return month + "/" + day + "/" + year + " from " + start + " to " + end + "(" + total + "/" + max + ")";
             }
 
             $ctrl.getTime = function(date) {
